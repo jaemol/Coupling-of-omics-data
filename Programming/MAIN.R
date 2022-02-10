@@ -6,9 +6,6 @@ rm(list = ls())
 library(gsubfn)
 
 # loading in the sources of other functions
-#source("G:/Mit drev/Specialeprojekt/Programming/extracting_data_KAT.R")
-#source("G:/Mit drev/Specialeprojekt/Programming/data_filtering.R")
-#source("G:/Mit drev/Specialeprojekt/Programming/Functions.R")
 
 source("C:/Users/Jmoll/Documents/GitHub/Coupling-of-omics-data/Programming/extracting_data_KAT.R")
 #source("C:/Users/Jmoll/Documents/GitHub/Coupling-of-omics-data/Programming/data_filtering.R")
