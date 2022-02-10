@@ -1,4 +1,4 @@
-#### Coupling-of-omics-data ####
+#### Coupling of omics data ####
 The purpose of this project is twofold; 
 
 firstly, to address the issue of dealing with multiple datasets of different omics and variables, thus attempting to find and / or implement a systematic method or approach of combining two or more matrices, using multivariate statistics and mathematical modelling. 
