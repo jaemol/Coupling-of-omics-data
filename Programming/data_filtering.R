@@ -42,7 +42,7 @@ inData = inData[, -throwAway]
 meanData  <- apply(inData, 2, mean)
 stdData   <- apply(inData, 2, sd)   
 varData   <- apply(inData, 2, var)
-ratioData <- apply(inData, 2, function(x){length(which(x==0))/length(x)})
+ratioData <- apply(inData, 2, function(x){length(which(x!=0))/length(x)})
                                       
 
 # removing the names for easier access
