@@ -1,0 +1,4 @@
+List of R-scripts
+- MAIN.R: 					main R-document, where all functions are used
+- extracting_data_KAT.R: 	load in data from both omics, make a combined dataset of only the relevant testIDs, based on given 'week'-value
+- data_filtering.R: 		takes in a dataset and a threshold coefficient and filters the data, to only get relevant attributes
