@@ -51,3 +51,13 @@ plot(varData, main = "Variance")
 plot(ratioData, main = "Singleton ratios")
 
 
+# filtering out all of the singleton-zero ratios
+throwArray <- seq(-1, length.out = length(ratioData[ratioData == max(ratioData)]))
+for (i in 1:length(ratioData)) {
+  if (ratioData[i] == max(ratioData)) {
+    throwArray[i] = i
+  }
+}
+
+#ratioData = ratioData[ratioData != max(ratioData)]
+#aknsdkasd
