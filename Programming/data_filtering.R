@@ -39,18 +39,15 @@ inData = inData[, -throwAway]
 
 ## finding different interesting information on the set
 ## mean, var, STD, ratio of zeros
-meanData  <- apply(inData, 2, mean)
-stdData   <- apply(inData, 2, sd)   
-varData   <- apply(inData, 2, var)
-ratioData <- apply(inData, 2, function(x){length(which(x!=0))/length(x)})
+meanData  <- unname(apply(inData, 2, mean))
+stdData   <- unname(apply(inData, 2, sd))
+varData   <- unname(apply(inData, 2, var))
+ratioData <- unname(apply(inData, 2, function(x){length(which(x==0))/length(x)}))
                                       
 
-# removing the names for easier access
-meanData  = unname(meanData)
-stdData   = unname(stdData)
-varData   = unname(varData)
-ratioData = unname(ratioData)
-
-
+plot(meanData, main = "Mean Data")
+plot(stdData, main = "Standard Variations")
+plot(varData, main = "Variance")
+plot(ratioData, main = "Singleton ratios")
 
 
