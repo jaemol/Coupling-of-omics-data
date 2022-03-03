@@ -16,7 +16,6 @@ inData = subset(inData, select = -c(PIG_DATE, OUA))
 ## We start by running through and filtering out zero-columns
 throwAway <- c()
 #throwAway=seq(-1, NCOL(inData ))
-# disregarding the first two columns - ID and OUA
 for (i in 1:NCOL(inData)) {
   # if the variance is equal to zero, then its a zero-column
   if (var(inData[,i]) == 0) {
@@ -52,12 +51,24 @@ plot(ratioData, main = "Singleton ratios")
 
 
 # filtering out all of the singleton-zero ratios
-throwArray <- seq(-1, length.out = length(ratioData[ratioData == max(ratioData)]))
-for (i in 1:length(ratioData)) {
-  if (ratioData[i] == max(ratioData)) {
-    throwArray[i] = i
+singletonValue = max(ratioData)
+
+throwAway <- c()
+
+for (i in 1:NCOL(inData)) {
+  # if the value of ratioData is equal to singletonValue, throw away
+  if (ratioData[i] == singletonValue) {
+    throwAway = c(throwAway, i)
+    #throwAway[i]=i
   }
 }
 
-#ratioData = ratioData[ratioData != max(ratioData)]
-#aknsdkasd
+# dropping columns by index
+inData = inData[, -throwAway]
+
+# singleton-zero ratio filtering complete
+
+
+
+
+
