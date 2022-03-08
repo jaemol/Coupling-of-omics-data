@@ -66,7 +66,18 @@ for (i in 1:NCOL(inData)) {
 # dropping columns by index
 inData = inData[, -throwAway]
 
-# singleton-zero ratio filtering complete
+## singleton-zero ratio filtering complete
+
+## filtering upon the relative standard deviation
+meanData  <- unname(apply(inData, 2, mean))
+stdData   <- unname(apply(inData, 2, sd))
+varData   <- unname(apply(inData, 2, var))
+ratioData <- unname(apply(inData, 2, function(x){length(which(x==0))/length(x)}))
+
+relativeSTD <- unname(apply(inData, 2, function(x){sd(x)/mean(x)}))
+
+
+
 
 
 
