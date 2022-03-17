@@ -52,12 +52,13 @@ plot(ratioData, main = "Singleton ratios")
 
 # filtering out all of the singleton-zero ratios
 singletonValue = max(ratioData)
+# singletonValue = 0.85
 
 throwAway <- c()
 
 for (i in 1:NCOL(inData)) {
   # if the value of ratioData is equal to singletonValue, throw away
-  if (ratioData[i] == singletonValue) {
+  if (ratioData[i] >= singletonValue) {
     throwAway = c(throwAway, i)
     #throwAway[i]=i
   }
@@ -76,6 +77,19 @@ ratioData <- unname(apply(inData, 2, function(x){length(which(x==0))/length(x)})
 
 relativeSTD <- unname(apply(inData, 2, function(x){sd(x)/mean(x)}))
 
+
+relSTDValue = 0.85
+
+throwAway <- c()
+
+for (i in 1:NCOL(inData)) {
+  if (ratioData[i] >= relSTDValue) {
+    throwAway = c(throwAway, i)
+  }
+}
+
+# dropping columns by index
+inData = inData[, -throwAway]
 
 
 
