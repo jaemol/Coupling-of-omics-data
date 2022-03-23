@@ -38,13 +38,19 @@ plot(sort(varData), main = "Variance")
 plot(sort(ratioData), main = "Singleton ratios")
 plot(sort(CV), main = "Relative standard deviation")
 
+ratData = list(ratioData)
+
 
 # fitting Michaelis-Menten function to data
 Vmax  <- max(ratioData)
 k     <- Vmax / 2
 
-mmModel <- nls(data = sort(ratioData), start = list(Vm=Vmax, K=k))
+mmModel <- nls(rate ~ Vm * conc / (K + conc), data = sort(ratData), start = list(Vm=Vmax, K=k))
 #http://strata.uga.edu/8370/lecturenotes/nonlinearRegression.html
+
+
+
+
 """
 par(mfrow=c(2,1), mar=c(2,2,0,0))
 plot(sort(ratioData))
