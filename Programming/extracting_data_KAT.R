@@ -8,8 +8,11 @@ library(gsubfn)
 # beginning function # 
 extracting_data_KAT <- function() {
   # loading in the two datasheets
-  data_16s  <- read.table("C:/Users/Jmoll/Documents/GitHub/Coupling-of-omics-data/Testdata/allData_16S_cleaned.txt")
-  data_qpcr <- read.table("C:/Users/Jmoll/Documents/GitHub/Coupling-of-omics-data/Testdata/allData_qPCR_cleaned.txt")
+  #data_16s  <- read.table("C:/Users/Jmoll/Documents/GitHub/Coupling-of-omics-data/Testdata/allData_16S_cleaned.txt")
+  #data_qpcr <- read.table("C:/Users/Jmoll/Documents/GitHub/Coupling-of-omics-data/Testdata/allData_qPCR_cleaned.txt")
+  
+  data_16s  <- read.table("Testdata/allData_16S_cleaned.txt")
+  data_qpcr <- read.table("Testdata/allData_qPCR_cleaned.txt") 
   
   # Finding just the results from week two
   data_week02_16s   <- data_16s[data_16s$SAMPLEWEEK == 'Week 02',]

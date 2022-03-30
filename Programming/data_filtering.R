@@ -3,7 +3,7 @@
 ### and then filter it by a given limit of coefficient ###
 
 # Loading libraries
-library(ggplot2)
+#library(ggplot2)
 library(gsubfn)
 
 options(warn = 0) # set=2 to end loops when warnings occur
@@ -39,21 +39,17 @@ data_filtering <- function(data) {
   plot(sort(ratioData), main = "Singleton ratios")
   plot(sort(CVData), main = "Relative standard deviation")
   
-  ratData = list(ratioData)
-  
   
   # fitting Michaelis-Menten function to data
   time_frame <- seq(from = 1, to = length(ratioData), by = 1)
-  Vmax  <- max(ratioData)
-  k     <- max(time_frame) / 2
   
-  mmModel <- nls(sort(ratioData) ~ Vm*time_frame/(K+time_frame), start = list(Vm=Vmax, K=k))
+  mmModel <- nls(sort(ratioData) ~ Vm*time_frame/(K+time_frame), start = list(Vm=max(ratioData), K=max(time_frame) / 2))
   
   # parameters estimated including confidence interval
   coef(mmModel)
   confint(mmModel, level = 0.9)
   
-  # updating to estimated parameters
+  # defining to estimated parameters
   Vmax = coef(mmModel)[[1]]
   K    = coef(mmModel)[[2]]
   
@@ -79,7 +75,7 @@ data_filtering <- function(data) {
     temp_y = Vmax*temp_x / (K*temp_x)
     
     dist = abs(a_linearFit*temp_x + b_linearFit-temp_y)/sqrt(a_linearFit^2+1)
-    print(dist)
+    
     if (dist >= longest_distance) {longest_distance = dist; longest_x = temp_x}
   }
   
@@ -93,8 +89,24 @@ data_filtering <- function(data) {
   inData = inData[, throwAway]
   rm(throwAway) # to save memory
   
+  meanData  <- unname(apply(inData, 2, mean))
+  stdData   <- unname(apply(inData, 2, sd))
+  varData   <- unname(apply(inData, 2, var))
+  ratioData <- unname(apply(inData, 2, function(x){length(which(x==0))/length(x)}))
+  CVData    <- unname(apply(inData, 2, function(x){sd(x)/mean(x)}))
+  
+  
+  plot(sort(meanData), main = "Mean Data")
+  plot(sort(stdData), main = "Standard Variations")
+  plot(sort(varData), main = "Variance")
+  plot(sort(ratioData), main = "Singleton ratios")
+  plot(sort(CVData), main = "Relative standard deviation")
+  
+  
+  inData = cbind(testID, OUA, inData)
+  
   outData = inData
   
-  rm(list=setdiff(ls(), c("outData", "testID", "OUA")))
-  list(outData, testID, OUA)
+  rm(list=setdiff(ls(), "outData"))
+  return(outData)
 }
