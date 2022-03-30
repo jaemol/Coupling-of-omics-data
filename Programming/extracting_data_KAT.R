@@ -11,6 +11,7 @@ extracting_data_KAT <- function() {
   #data_16s  <- read.table("C:/Users/Jmoll/Documents/GitHub/Coupling-of-omics-data/Testdata/allData_16S_cleaned.txt")
   #data_qpcr <- read.table("C:/Users/Jmoll/Documents/GitHub/Coupling-of-omics-data/Testdata/allData_qPCR_cleaned.txt")
   
+  print("Loading in data...")
   data_16s  <- read.table("Testdata/allData_16S_cleaned.txt")
   data_qpcr <- read.table("Testdata/allData_qPCR_cleaned.txt") 
   
@@ -18,6 +19,7 @@ extracting_data_KAT <- function() {
   #data_16s   <- data_16s[data_16s$SAMPLEWEEK == 'Week 02',]
   #data_qpcr  <- data_qpcr[data_qpcr$SAMPLEWEEK == 'Week 02',]
   
+  print("Removing unimportant attributes...")
   # next, include only testID (PIG_DATE), OUA and the results of the analyses
   data_16s   <- subset(data_16s, select = -c(PIG, DATE, WEANING_TIME, GROUP, Newlytreated, 
                                                    WEEK, SAMPLEWEEK, Florkem, Metacam, Zactran, 
@@ -27,6 +29,7 @@ extracting_data_KAT <- function() {
                                                       WEEK, SAMPLEWEEK, Florkem, Metacam, Zactran, 
                                                       Antibiotic, Treatment_group, Treatment_date, CorrectedGroup, sample))
   
+  print("Only keeping common testIDs from both datasets...")
   # extract two arrays of testIDs, and find which are common between them both
   testID_16s  <- data_16s$PIG_DATE
   testID_qpcr <- data_qpcr$PIG_DATE
@@ -52,5 +55,6 @@ extracting_data_KAT <- function() {
   # dropping the variables, except the resulting data set and the respective length of the datasets
   rm(list=setdiff(ls(), c("complete_data", "len_16s", "len_qpcr")))
   
+  print("Data loading finished...")
   list(complete_data, len_16s, len_qpcr)
 }

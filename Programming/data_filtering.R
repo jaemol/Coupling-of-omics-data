@@ -24,6 +24,7 @@ data_filtering <- function(data) {
   inData = inData[, -throwAway]
   rm(throwAway) # to save memory
   
+  print("Generating metadata...")
   ## finding different interesting information on the set
   ## mean, var, STD, ratio of zeros, 
   meanData  <- unname(apply(inData, 2, mean))
@@ -41,6 +42,7 @@ data_filtering <- function(data) {
   
   
   # fitting Michaelis-Menten function to data
+  print("Fitting Michaelis-Menten function...")
   time_frame <- seq(from = 1, to = length(ratioData), by = 1)
   
   mmModel <- nls(sort(ratioData) ~ Vm*time_frame/(K+time_frame), start = list(Vm=max(ratioData), K=max(time_frame) / 2))
@@ -86,6 +88,7 @@ data_filtering <- function(data) {
   throwAway <- which(ratioData <= threshold_ratio)
   
   # dropping columns by index
+  sprintf("Filtering out data with zero-ratio above %d...", threshold_ratio)
   inData = inData[, throwAway]
   rm(throwAway) # to save memory
   
@@ -108,5 +111,6 @@ data_filtering <- function(data) {
   outData = inData
   
   rm(list=setdiff(ls(), "outData"))
+  print("Filtering done...")
   return(outData)
 }
