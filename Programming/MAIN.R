@@ -18,5 +18,5 @@ source("Programming/data_filtering.R")
 # loading in the data
 list[data, len_16s, len_qpcr] <- extracting_data_KAT()
 
-list[data, testID, OUA]       <- data_filtering(data)
+data <- data_filtering(data)
 

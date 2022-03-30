@@ -15,15 +15,15 @@ extracting_data_KAT <- function() {
   data_qpcr <- read.table("Testdata/allData_qPCR_cleaned.txt") 
   
   # Finding just the results from week two
-  data_week02_16s   <- data_16s[data_16s$SAMPLEWEEK == 'Week 02',]
-  data_week02_qpcr  <- data_qpcr[data_qpcr$SAMPLEWEEK == 'Week 02',]
+  #data_16s   <- data_16s[data_16s$SAMPLEWEEK == 'Week 02',]
+  #data_qpcr  <- data_qpcr[data_qpcr$SAMPLEWEEK == 'Week 02',]
   
   # next, include only testID (PIG_DATE), OUA and the results of the analyses
-  pure_data_16s   <- subset(data_week02_16s, select = -c(PIG, DATE, WEANING_TIME, GROUP, Newlytreated, 
+  pure_data_16s   <- subset(data_16s, select = -c(PIG, DATE, WEANING_TIME, GROUP, Newlytreated, 
                                                    WEEK, SAMPLEWEEK, Florkem, Metacam, Zactran, 
                                                    Antibiotic, Treatment_group, Treatment_date, CorrectedGroup,
                                                    PIG.1, DATE.1, OUA.1, PIG_DATE.1, OriginalNAME))
-  pure_data_qpcr  <- subset(data_week02_qpcr, select = -c(PIG, DATE, WEANING_TIME, GROUP, Newlytreated, 
+  pure_data_qpcr  <- subset(data_qpcr, select = -c(PIG, DATE, WEANING_TIME, GROUP, Newlytreated, 
                                                       WEEK, SAMPLEWEEK, Florkem, Metacam, Zactran, 
                                                       Antibiotic, Treatment_group, Treatment_date, CorrectedGroup, sample))
   
