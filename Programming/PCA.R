@@ -4,6 +4,9 @@
 # Using R-function 'princomp()'
 
 # loading libraries
+library(pbkrtest)
+library(ggplot2)
+library(ggpubr)
 library(factoextra) # used to create ggplot2-based visualization
 
 # excluding testID and OUA (antibiotics used or not)
@@ -17,4 +20,7 @@ inData = subset(inData, select = -c(testID, OUA))
 inData = t(inData) 
 
 # making PCA model
-pcaModel <- princomp(inData, cor = FALSE, scores = TRUE)
+pcaModel <- prcomp(inData, scale = TRUE)
+
+# making scree plot, to visualize eigenvalues
+fviz_eig(pcaModel)

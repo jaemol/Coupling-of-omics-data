@@ -88,7 +88,7 @@ data_filtering <- function(data) {
   throwAway <- which(ratioData <= threshold_ratio)
   
   # dropping columns by index
-  sprintf("Filtering out data with zero-ratio above %d...", threshold_ratio)
+  sprintf("Filtering out data with zero-ratio above %f...", threshold_ratio)
   inData = inData[, throwAway]
   rm(throwAway) # to save memory
   
