@@ -58,7 +58,7 @@ data_filtering <- function(data) {
   # visualizing the model in relation to ratio Data
   plot(sort(ratioData) ~ time_frame, col = "grey")
   lines(predict(mmModel) ~ time_frame, lwd = 3, col = "dark red")
-  abline(h = 0.51111)
+  abline(h = threshold_ratio)
   
   # finding local maxima, potentiel knee points
   kneePoints_collected <- which(diff(sign(diff(ratioData)))==-2)+1
@@ -67,14 +67,19 @@ data_filtering <- function(data) {
   a_linearFit <- max(ratioData) / max(time_frame)
   b_linearFit <- min(ratioData) - a_linearFit*min(time_frame)
   
+  abline(a = b_linearFit, b=a_linearFit)
+  
   # using distance formular on all knee points to line
   # distance formula: d = abs(a*x+b-y)/sqrt(a^2+1)
   longest_distance  <- 0
   longest_x         <- 0
   
+  i=kneePoints_collected[400]
   for (i in kneePoints_collected) {
     temp_x = i
-    temp_y = Vmax*temp_x / (K*temp_x)
+    temp_y = Vmax*temp_x / (K+temp_x)
+    
+    #points(temp_x, temp_y)
     
     dist = abs(a_linearFit*temp_x + b_linearFit-temp_y)/sqrt(a_linearFit^2+1)
     
@@ -85,12 +90,12 @@ data_filtering <- function(data) {
   threshold_ratio <- ratioData[longest_x]
   
   # if the ratioData is above the found cutoff, it is to be removed
-  throwAway <- which(ratioData <= threshold_ratio)
+  keepIn <- which(ratioData <= threshold_ratio)
   
   # dropping columns by index
   sprintf("Filtering out data with zero-ratio above %f...", threshold_ratio)
-  inData = inData[, throwAway]
-  rm(throwAway) # to save memory
+  inData = inData[, keepIn]
+  rm(keepIn) # to save memory
   
   meanData  <- unname(apply(inData, 2, mean))
   stdData   <- unname(apply(inData, 2, sd))
