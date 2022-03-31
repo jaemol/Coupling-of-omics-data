@@ -58,13 +58,18 @@ data_filtering <- function(data) {
   # visualizing the model in relation to ratio Data
   plot(sort(ratioData) ~ time_frame, col = "grey")
   lines(predict(mmModel) ~ time_frame, lwd = 3, col = "dark red")
-  abline(h = threshold_ratio)
+  #abline(h = threshold_ratio)
   
   # finding local maxima, potentiel knee points
   kneePoints_collected <- which(diff(sign(diff(ratioData)))==-2)+1
   
   # finding the linear fit from origo to asymptote
   a_linearFit <- max(ratioData) / max(time_frame)
+  b_linearFit <- min(ratioData) - a_linearFit*min(time_frame)
+  
+  max_x = which(sort(ratioData)>=max(ratioData)*0.97)[1]
+  max_y = Vmax*max_x / (K+max_x)
+  a_linearFit <- (max_y - min(ratioData)) / (max_x-min(time_frame))
   b_linearFit <- min(ratioData) - a_linearFit*min(time_frame)
   
   abline(a = b_linearFit, b=a_linearFit)
@@ -74,8 +79,8 @@ data_filtering <- function(data) {
   longest_distance  <- 0
   longest_x         <- 0
   
-  i=kneePoints_collected[400]
-  for (i in kneePoints_collected) {
+  #i=kneePoints_collected[400]
+  for (i in which(kneePoints_collected<=max_x)) {
     temp_x = i
     temp_y = Vmax*temp_x / (K+temp_x)
     
@@ -87,7 +92,10 @@ data_filtering <- function(data) {
   }
   
   # defining the cutoff threshold
-  threshold_ratio <- ratioData[longest_x]
+  threshold_ratio <- Vmax*longest_x / (K+longest_x)
+  
+  points(longest_x, threshold_ratio)
+  abline(h = threshold_ratio)
   
   # if the ratioData is above the found cutoff, it is to be removed
   keepIn <- which(ratioData <= threshold_ratio)

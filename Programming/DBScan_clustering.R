@@ -42,26 +42,4 @@ findEpsi(inDataScale, minRange = 0, maxRange = 100, steps = 10,maxY=30)
 
 dbscan::dbscan(scale(inData),10000,10)
 
-head(colnames(inData))
 
-origNames=colnames(inData)
-newNames=apply(stringr::str_split_fixed(string = origNames, pattern = "_",8)[,1:6],1, paste, collapse="_")
-
-length(unique(newNames))
-uniqNames=unique(newNames)
-
-newDat=data.frame(dummy=1:NROW(inData))
-
-j=uniqNames[1]
-for(j in uniqNames) {
-  
-  jIndx=grep(j,origNames )
-  if(length(jIndx)>1) {
-    newDat=cbind(newDat,rowSums(inData[,jIndx]))
-  } else {
-    newDat=cbind(newDat,(inData[,jIndx]))
-  }
-}
-
-newDat=newDat[,-1]
-colnames(newDat)=uniqNames
