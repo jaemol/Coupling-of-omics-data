@@ -12,7 +12,7 @@ library(data.table) # used to keep structure of data frame when transposing
 
 # excluding testID and OUA (antibiotics used or not)
 inData = data
-testID  <- inData$PIG_DATE
+testID  <- inData$testID
 OUA     <- inData$OUA
 
 inData = subset(inData, select = -c(testID, OUA))
