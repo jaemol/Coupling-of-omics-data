@@ -21,29 +21,50 @@ extracting_data_KAT <- function() {
   
   print("Removing unimportant attributes...")
   # next, include only testID (PIG_DATE), OUA and the results of the analyses
-  data_16s   <- subset(data_16s, select = -c(PIG, DATE, WEANING_TIME, GROUP, Newlytreated, 
+  pure_data_16s   <- subset(data_16s, select = -c(PIG, DATE, WEANING_TIME, GROUP, Newlytreated, 
                                                    WEEK, SAMPLEWEEK, Florkem, Metacam, Zactran, 
                                                    Antibiotic, Treatment_group, Treatment_date, CorrectedGroup,
                                                    PIG.1, DATE.1, OUA.1, PIG_DATE.1, OriginalNAME))
-  data_qpcr  <- subset(data_qpcr, select = -c(PIG, DATE, WEANING_TIME, GROUP, Newlytreated, 
+  pure_data_qpcr  <- subset(data_qpcr, select = -c(PIG, DATE, WEANING_TIME, GROUP, Newlytreated, 
                                                       WEEK, SAMPLEWEEK, Florkem, Metacam, Zactran, 
                                                       Antibiotic, Treatment_group, Treatment_date, CorrectedGroup, sample))
   
   print("Only keeping common testIDs from both datasets...")
   # extract two arrays of testIDs, and find which are common between them both
-  testID_16s  <- data_16s$PIG_DATE
-  testID_qpcr <- data_qpcr$PIG_DATE
+  testID_16s  <- pure_data_16s$PIG_DATE
+  testID_qpcr <- pure_data_qpcr$PIG_DATE
   
   common_IDs  <- intersect(testID_16s, testID_qpcr)
   
   # only keep relevant testIDs
-  data_16s   = data_16s[data_16s$PIG_DATE %in% common_IDs, ]
-  data_qpcr  = data_qpcr[data_qpcr$PIG_DATE %in% common_IDs, ]
+  pure_data_16s   = pure_data_16s[data_16s$PIG_DATE %in% common_IDs, ]
+  pure_data_qpcr  = pure_data_qpcr[data_qpcr$PIG_DATE %in% common_IDs, ]
   
   # sort the datasets based testID, append whilst removing 1 edition of testID and OUA
-  data_16s   = data_16s[order(data_16s$PIG_DATE), ]
-  data_qpcr  = data_qpcr[order(data_qpcr$PIG_DATE), ]
-  data_qpcr  = subset(data_qpcr, select = -c(PIG_DATE, OUA))
+  pure_data_16s   = pure_data_16s[order(pure_data_16s$PIG_DATE), ]
+  pure_data_qpcr  = pure_data_qpcr[order(pure_data_qpcr$PIG_DATE), ]
+  pure_data_qpcr  = subset(pure_data_qpcr, select = -c(PIG_DATE, OUA))
+  
+  # moving up in taxonomy for the 16s data, going from species to genus
+  origNames <- colnames(data_16s)
+  newNames <- apply(stringr::str_split_fixed(string = origNames, pattern = "_",8)[,1:6],1, paste, collapse="_")
+  
+  length(unique(newNames))
+  uniqNames=unique(newNames)
+  
+  newDat=data.frame(dummy=1:NROW(pure_data_16s))
+  
+  #j=uniqNames[1]
+  for(j in uniqNames) {
+    
+    jIndx=grep(j,origNames )
+    if(length(jIndx)>1) {
+      newDat=cbind(newDat,rowSums(pure_data_16s[,jIndx]))
+    } else {
+      newDat=cbind(newDat,(pure_data_16s[,jIndx]))
+    }
+  }
+  
   
   # now, append the datasets, to get one set
   complete_data <- cbind(data_16s, data_qpcr, deparse.level = 1)
