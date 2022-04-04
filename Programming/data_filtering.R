@@ -11,10 +11,10 @@ options(warn = 0) # set=2 to end loops when warnings occur
 data_filtering <- function(data) {
   # Gonna write it out first, then make it into a function
   inData = data
-  testID  <- inData$PIG_DATE
+  testID  <- inData$testID
   OUA     <- inData$OUA
   
-  inData = subset(inData, select = -c(PIG_DATE, OUA))
+  inData = subset(inData, select = -c(testID, OUA))
   
   # if the variance is equal to zero, then its a zero-column
   #which(unname(apply(inData, 2, var))==0)
