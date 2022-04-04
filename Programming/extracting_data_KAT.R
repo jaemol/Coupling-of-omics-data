@@ -45,8 +45,14 @@ extracting_data_KAT <- function() {
   pure_data_qpcr  = pure_data_qpcr[order(pure_data_qpcr$PIG_DATE), ]
   pure_data_qpcr  = subset(pure_data_qpcr, select = -c(PIG_DATE, OUA))
   
+  # extracting testID and OUA from 16s data
+  testID  <- pure_data_16s$PIG_DATE
+  OUA     <- pure_data_16s$OUA
+  
+  pure_data_16s = subset(pure_data_16s, select = -c(PIG_DATE, OUA))
+  
   # moving up in taxonomy for the 16s data, going from species to genus
-  origNames <- colnames(data_16s)
+  origNames <- colnames(pure_data_16s)
   newNames <- apply(stringr::str_split_fixed(string = origNames, pattern = "_",8)[,1:6],1, paste, collapse="_")
   
   length(unique(newNames))
@@ -65,9 +71,14 @@ extracting_data_KAT <- function() {
     }
   }
   
+  newDat=newDat[,-1]
+  colnames(newDat)=uniqNames
   
-  # now, append the datasets, to get one set
-  complete_data <- cbind(data_16s, data_qpcr, deparse.level = 1)
+  # now making that new data into 16s data set
+  pure_data_16s = newDat
+  
+  # now, append the datasets, to get one set, along with testID and OUA
+  complete_data <- cbind(testID, OUA, pure_data_16s, pure_data_qpcr, deparse.level = 1)
   
   # keeping the length of 16s and qpcr data - JUST the results, no ID or OUA
   len_16s   <- length(data_16s[1,]) - 2
