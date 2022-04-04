@@ -1,8 +1,8 @@
 ### DBScan density-based spatial clustering ###
 
 # loading libraries
-library(fpc)
 library(dbscan)
+library(fpc)
 library(factoextra)
 
 # setting seed
@@ -16,7 +16,7 @@ OUA     <- inData$OUA
 inData = subset(inData, select = -c(testID, OUA))
 
 # selecting arbitrary cluster number, just for visualization
-kmeans_model <- kmeans(inData, 7, nstart = 25)
+kmeans_model <- kmeans(inData, 3, nstart = 10)
 
 # generating cluster
 fviz_cluster(kmeans_model, inData, frame = FALSE, geom = "point")
@@ -38,8 +38,7 @@ findEpsi=function(L, minRange=0,maxRange=3, steps=0.1, maxY=200, minP=10) {
 }
 
 inDataScale=scale(inData, center = T, scale = T)
-findEpsi(inDataScale, minRange = 0, maxRange = 100, steps = 10,maxY=30)
+findEpsi(inDataScale, minRange = 0, maxRange = 25, steps = 0.1 ,maxY=200)
 
-dbscan::dbscan(scale(inData),10000,10)
-
+dbscan::dbscan(inDataScale,11,10)
 
