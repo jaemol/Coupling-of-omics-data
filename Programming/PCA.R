@@ -18,7 +18,7 @@ OUA     <- inData$OUA
 inData = subset(inData, select = -c(testID, OUA))
 
 # transposing data; samples on columns, features on rows
-inData = transpose(inData) 
+#inData = transpose(inData) 
 
 # adding the names to the transposed data
 rownames(inData) <- colnames(data[-(1:2)])

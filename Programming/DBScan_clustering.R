@@ -34,11 +34,14 @@ findEpsi=function(L, minRange=0,maxRange=3, steps=0.1, maxY=200, minP=10) {
     points(i,length(unique(DB$cluster)), pch=16, col=1)
     points(i,length(which(DB$cluster==0)), pch=16,col=2)
     
+    print(i)
+    print(length(unique(DB$cluster)))
+    
   }
 }
 
 inDataScale=scale(inData, center = T, scale = T)
-findEpsi(inDataScale, minRange = 0, maxRange = 25, steps = 0.1 ,maxY=200)
+findEpsi(inDataScale, minRange = 0, maxRange = 65, steps = 1 ,maxY=900)
 
-dbscan::dbscan(inDataScale,11,10)
+dbscan::dbscan(inDataScale,6,65)
 
