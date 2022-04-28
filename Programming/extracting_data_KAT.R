@@ -6,18 +6,20 @@
 library(gsubfn)
 
 # beginning function # 
-extracting_data_KAT <- function() {
+extracting_data_KAT <- function(whichWeek="null") {
   # loading in the two datasheets
-  #data_16s  <- read.table("C:/Users/Jmoll/Documents/GitHub/Coupling-of-omics-data/Testdata/allData_16S_cleaned.txt")
-  #data_qpcr <- read.table("C:/Users/Jmoll/Documents/GitHub/Coupling-of-omics-data/Testdata/allData_qPCR_cleaned.txt")
-  
   print("Loading in data...")
-  data_16s  <- read.table("Testdata/allData_16S_cleaned.txt")
-  data_qpcr <- read.table("Testdata/allData_qPCR_cleaned.txt") 
+  #data_16s_original  <- read.table("Testdata/allData_16S_cleaned.txt")
+  #data_qpcr_original <- read.table("Testdata/allData_qPCR_cleaned.txt") 
   
-  # Finding just the results from week two
-  #data_16s   <- data_16s[data_16s$SAMPLEWEEK == 'Week 02',]
-  #data_qpcr  <- data_qpcr[data_qpcr$SAMPLEWEEK == 'Week 02',]
+  if (whichWeek != "null"){
+    # Finding just the results from week two
+    data_16s   <- data_16s_original[data_16s_original$SAMPLEWEEK == whichWeek,]
+    data_qpcr  <- data_qpcr_original[data_qpcr_original$SAMPLEWEEK == whichWeek,]
+  } else {
+    data_16s   <- data_16s_original
+    data_qpcr  <- data_qpcr_original
+  }
   
   print("Removing unimportant attributes...")
   # next, include only testID (PIG_DATE), OUA and the results of the analyses
@@ -88,5 +90,6 @@ extracting_data_KAT <- function() {
   rm(list=setdiff(ls(), c("complete_data", "len_16s", "len_qpcr")))
   
   print("Data loading finished...")
-  list(complete_data, len_16s, len_qpcr)
+  #list(complete_data, len_16s, len_qpcr)
+  return(complete_data)
 }
