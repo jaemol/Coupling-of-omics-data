@@ -25,3 +25,4 @@ devtools::install_github("stefpeschel/NetCoMi",
 
 # loading NetCoMi library
 library(NetCoMi)
+
