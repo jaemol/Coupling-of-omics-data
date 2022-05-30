@@ -6,11 +6,13 @@
 library(gsubfn)
 
 # beginning function # 
-extracting_data_KAT <- function(whichWeek="null") {
+extracting_data_KAT <- function(whichWeek="null", loadOrigData=FALSE) {
   # loading in the two datasheets
   print("Loading in data...")
-  #data_16s_original  <- read.table("Testdata/allData_16S_cleaned.txt")
-  #data_qpcr_original <- read.table("Testdata/allData_qPCR_cleaned.txt") 
+  if (loadOrigData == TRUE) {
+    data_16s_original  <- read.table("Testdata/allData_16S_cleaned.txt")
+    data_qpcr_original <- read.table("Testdata/allData_qPCR_cleaned.txt") 
+  }
   
   if (whichWeek != "null"){
     # Finding just the results from week two
