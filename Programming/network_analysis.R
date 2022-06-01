@@ -44,18 +44,34 @@ OUA     <- inData$OUA
 inData = subset(inData, select = -c(testID, OUA))
 
 
+colnames(inData)=gsub("DATA.Bacteria_[A-Za-z]*_[A-Za-z]*_[A-Za-z]*_[A-Za-z]*_(.*)","\\1",colnames(inData))
+
+
+
 # building single network with SPRING as association measure
-net_single <- netConstruct(amgut1.filt,
-                           filtTax = "highestFreq",
-                           filtTaxPar = list(highestFreq = 100),
-                           filtSamp = "totalReads",
-                           filtSampPar = list(totalReads = 1000),
-                           measure = "spring",
+net_single <- netConstruct(inData,
+                           #filtTax = "highestFreq",
+                           #filtTaxPar = list(highestFreq = 100),
+                           #filtSamp = "totalReads",
+                           #filtSampPar = list(totalReads = 1000),
+                           measure = "spearman",thresh = 0.6,
                            measurePar = list(nlambda=10, 
                                              rep.num=10),
                            normMethod = "none", 
                            zeroMethod = "none",
-                           sparsMethod = "none", 
+                           sparsMethod = "threshold", 
                            dissFunc = "signed",
                            verbose = 3,
                            seed = 123456)
+
+props_single <- netAnalyze(net_single, 
+                           centrLCC = TRUE,
+                           clustMethod = "cluster_fast_greedy",
+                           hubPar = "eigenvector",
+                           weightDeg = FALSE, normDeg = FALSE)
+
+plot(props_single, labelScale = F, cexLabels = 1 )
+
+
+cor(inData$TolC1, inData$Escherichia.Shigella, method = "spear")
+
