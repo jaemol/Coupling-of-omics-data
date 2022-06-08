@@ -3,7 +3,7 @@
 ### https://github.com/stefpeschel/NetCoMi ###
 
 ## installing package first time 
-"""
+
 if(!requireNamespace("BiocManager", quietly = TRUE)){
   utils::install.packages("BiocManager")
 }
@@ -14,6 +14,9 @@ BiocManager::install(pkgs = c("Biobase", "doSNOW", "fdrtool", "filematrix",
                               "pulsar", "qgraph", "Rdpack", "snow", "SPRING",
                               "stats", "utils", "vegan", "WGCNA"))
 
+BiocManager::install("GO.db")
+
+
 devtools::install_github("GraceYoon/SPRING")
 devtools::install_github("zdk123/SpiecEasi")
 
@@ -21,7 +24,7 @@ devtools::install_github("stefpeschel/NetCoMi",
                          dependencies = c("Depends", "Imports"),
                          repos = c("https://cloud.r-project.org/",
                                    BiocManager::repositories()))
-"""
+
 
 # loading NetCoMi library
 library(NetCoMi)
@@ -31,7 +34,7 @@ source("Programming/extracting_data_KAT.R")
 source("Programming/data_filtering.R")
 
 # loading data
-chosenWeek <- "Week 02"
+chosenWeek <- "Week 04"
 inData <- extracting_data_KAT(whichWeek = chosenWeek)
 
 # filtering data
