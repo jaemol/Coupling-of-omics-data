@@ -34,8 +34,9 @@ source("Programming/extracting_data_KAT.R")
 source("Programming/data_filtering.R")
 
 # loading data
-chosenWeek <- "Week 04"
-inData <- extracting_data_KAT(whichWeek = chosenWeek)
+chosenWeek      <- "Week 02"
+chosenTaxonomy  <- "species"
+inData <- extracting_data_KAT(whichWeek = chosenWeek, whichTaxLevel = chosenTaxonomy)
 
 # filtering data
 inData <- data_filtering(inData)
@@ -55,10 +56,13 @@ for (i in 1:length(colVector)) {
 }
 
 
-
-colnames(data)=gsub("DATA.Bacteria_[A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.](.*)","\\1",colnames(data))
-colnames(data)=gsub("DATA.Archaea_[A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.](.*)","\\1",colnames(data))
-
+if (chosenTaxonomy=="genus"){
+  colnames(data)=gsub("DATA.Bacteria_[A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.](.*)","\\1",colnames(data))
+  colnames(data)=gsub("DATA.Archaea_[A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.](.*)","\\1",colnames(data))
+} else {
+  colnames(data)=gsub("DATA.Bacteria_[A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.](.*)[_.](.*)","\\1",colnames(data))
+  colnames(data)=gsub("DATA.Archaea_[A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.](.*)[_.](.*)","\\1",colnames(data))
+}
 
 
 # building single network with SPRING as association measure - Full dataset, both treated and untreated
