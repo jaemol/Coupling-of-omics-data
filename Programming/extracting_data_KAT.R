@@ -6,7 +6,7 @@
 library(gsubfn)
 
 # beginning function # 
-extracting_data_KAT <- function(whichWeek="null", loadOrigData=FALSE) {
+extracting_data_KAT <- function(whichWeek="null", loadOrigData=FALSE, whichTaxLevel="species") {
   # loading in the two datasheets
   print("Loading in data...")
   if (loadOrigData == TRUE) {
@@ -55,31 +55,33 @@ extracting_data_KAT <- function(whichWeek="null", loadOrigData=FALSE) {
   
   pure_data_16s = subset(pure_data_16s, select = -c(PIG_DATE, OUA))
   
-  # moving up in taxonomy for the 16s data, going from species to genus
-  origNames <- colnames(pure_data_16s)
-  newNames <- apply(stringr::str_split_fixed(string = origNames, pattern = "_",8)[,1:6],1, paste, collapse="_")
-  
-  length(unique(newNames))
-  uniqNames=unique(newNames)
-  
-  newDat=data.frame(dummy=1:NROW(pure_data_16s))
-  
-  #j=uniqNames[1]
-  for(j in uniqNames) {
+  if (whichTaxLevel=="genus") {
+    # moving up in taxonomy for the 16s data, going from species to genus
+    origNames <- colnames(pure_data_16s)
+    newNames <- apply(stringr::str_split_fixed(string = origNames, pattern = "_",8)[,1:6],1, paste, collapse="_")
     
-    jIndx=grep(j,origNames )
-    if(length(jIndx)>1) {
-      newDat=cbind(newDat,rowSums(pure_data_16s[,jIndx]))
-    } else {
-      newDat=cbind(newDat,(pure_data_16s[,jIndx]))
+    length(unique(newNames))
+    uniqNames=unique(newNames)
+    
+    newDat=data.frame(dummy=1:NROW(pure_data_16s))
+    
+    #j=uniqNames[1]
+    for(j in uniqNames) {
+      
+      jIndx=grep(j,origNames )
+      if(length(jIndx)>1) {
+        newDat=cbind(newDat,rowSums(pure_data_16s[,jIndx]))
+      } else {
+        newDat=cbind(newDat,(pure_data_16s[,jIndx]))
+      }
     }
+    
+    newDat=newDat[,-1]
+    colnames(newDat)=uniqNames
+    
+    # now making that new data into 16s data set
+    pure_data_16s = newDat
   }
-  
-  newDat=newDat[,-1]
-  colnames(newDat)=uniqNames
-  
-  # now making that new data into 16s data set
-  pure_data_16s = newDat
   
   # now, append the datasets, to get one set, along with testID and OUA
   complete_data <- cbind(testID, OUA, pure_data_16s, pure_data_qpcr, deparse.level = 1)
