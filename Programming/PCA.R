@@ -11,11 +11,40 @@ library(factoextra) # used to create ggplot2-based visualization
 library(data.table) # used to keep structure of data frame when transposing
 
 # excluding testID and OUA (antibiotics used or not)
-inData = data
+# loading functions
+source("Programming/extracting_data_KAT.R")
+source("Programming/data_filtering.R")
+
+# loading data
+chosenWeek      <- "Week 02"
+chosenTaxonomy  <- "species"
+inData <- extracting_data_KAT(whichWeek = chosenWeek, whichTaxLevel = chosenTaxonomy)
+
+# filtering data
+inData <- data_filtering(inData)
+
+# excluding testID and OUA (antibiotics used or not)
+#inData = data
 testID  <- inData$testID
 OUA     <- inData$OUA
+data = subset(inData, select = -c(testID, OUA))
 
-inData = subset(inData, select = -c(testID, OUA))
+dataOneColumns <- grep(x = colnames(data), pattern = "DATA.*")
+
+
+colVector <- 1:length(colnames(data))
+for (i in 1:length(colVector)) {
+  if (i<=max(dataOneColumns)) {colVector[i] = "green"} else {colVector[i] = "red"}
+}
+
+
+if (chosenTaxonomy=="genus"){
+  colnames(data)=gsub("DATA.Bacteria_[A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.](.*)","\\1",colnames(data))
+  colnames(data)=gsub("DATA.Archaea_[A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.](.*)","\\1",colnames(data))
+} else {
+  colnames(data)=gsub("DATA.Bacteria_[A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.](.*)[_.](.*)","\\1",colnames(data))
+  colnames(data)=gsub("DATA.Archaea_[A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.](.*)[_.](.*)","\\1",colnames(data))
+}
 
 # transposing data; samples on columns, features on rows
 #inData = transpose(inData) 
@@ -26,7 +55,7 @@ inData = subset(inData, select = -c(testID, OUA))
 rownames(inData) <- testID
 
 # making PCA model
-pcaModel <- prcomp(inData, center = TRUE, scale = TRUE)
+pcaModel <- prcomp(data, center = TRUE, scale = TRUE)
 
 # making scree plot, to visualize eigenvalues
 fviz_eig(pcaModel)
@@ -48,7 +77,7 @@ plot(pcaModel$x[,1], pcaModel$x[,3])
 
 
 ####################################
-pca <- prcomp((inData), scale=TRUE) 
+pca <- prcomp((data), scale=TRUE) 
 
 ## plot pc1 and pc2
 plot(pca$x[,1], pca$x[,2])
