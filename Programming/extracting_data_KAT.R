@@ -15,7 +15,7 @@ extracting_data_KAT <- function(whichWeek="null", loadOrigData=FALSE, whichTaxLe
   }
   
   if (whichWeek != "null"){
-    # Finding just the results from week two
+    # Finding just the results from chosen week
     data_16s   <- data_16s_original[data_16s_original$SAMPLEWEEK == whichWeek,]
     data_qpcr  <- data_qpcr_original[data_qpcr_original$SAMPLEWEEK == whichWeek,]
   } else {
