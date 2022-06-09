@@ -34,8 +34,8 @@ source("Programming/extracting_data_KAT.R")
 source("Programming/data_filtering.R")
 
 # loading data
-chosenWeek      <- "Week 02"
-chosenTaxonomy  <- "species"
+chosenWeek      <- "Week 12"
+chosenTaxonomy  <- "genus"
 inData <- extracting_data_KAT(whichWeek = chosenWeek, whichTaxLevel = chosenTaxonomy)
 
 # filtering data
@@ -87,14 +87,28 @@ props_single_fullSet <- netAnalyze(net_single_fullSet,
                            hubPar = "eigenvector",
                            weightDeg = FALSE, normDeg = FALSE)
 
+#?summary.microNetProps
+summary(props_single_fullSet, numbNodes = 5L)
+
+
 plot(props_single_fullSet,
      labelScale = F,
      cexLabels = 1.3,
-     title1 = paste("Single network with Spearman",chosenWeek),
+     title1 = paste("Single network with Spearman",chosenWeek, chosenTaxonomy),
      showTitle = T,
      cexTitle = 2.3,
      nodeColor = colVector)
      
+# adding legend
+#legend("topright", cex = 0.5, title = "estimated association:",
+ #      legend = c("Metataxonomic","Genomic"), lty = 1, lwd = 1, col = c("green","red"), 
+  #     bty = "n", horiz = TRUE)
+
+legend(x=0.85,y=0.9,legend=c("Positive","Negative"),
+       cex=0.6,col=c("green","red"),pch=c(".","."),lwd = c(3,3))
+legend(x=0.85,y=0.6,legend=c("Metataxonomic","Genomic"),
+       cex=0.6,col=c("green","red"),pch=c(16,16),lwd = c(3,3))
+
 
 #cor(inData$TolC1, inData$Escherichia.Shigella, method = "spear")
 
@@ -125,10 +139,14 @@ props_single_untreated <- netAnalyze(net_single_untreated,
 plot(props_single_untreated,
      labelScale = F,
      cexLabels = 1.3,
-     title1 = "Single network with Spearman, untreated",
+     title1 = paste("Single network with Spearman, untreated", chosenWeek, chosenTaxonomy),
      showTitle = T,
      cexTitle = 2.3,
      nodeColor = colVector)
+
+legend(x=0.85,y=0.9,legend=c("Metataxonomic","Genomic"),
+       cex=0.6,col=c("green","red"),pch=c(16,16),lwd = c(3,3))
+
 
 # network treated, single network with spearman association
 data_treated <- data[which(OUA==1),]
@@ -156,7 +174,12 @@ props_single_treated <- netAnalyze(net_single_treated,
 plot(props_single_treated,
      labelScale = F,
      cexLabels = 1.3,
-     title1 = "Single network with Spearman, treated",
+     title1 = paste("Single network with Spearman, treated", chosenWeek, chosenTaxonomy),
      showTitle = T,
      cexTitle = 2.3,
      nodeColor = colVector)
+
+legend(x=0.85,y=0.9,legend=c("Metataxonomic","Genomic"),
+       cex=0.6,col=c("green","red"),pch=c(16,16),lwd = c(3,3))
+
+summary(props_single_treated, numbNodes = 5L)
