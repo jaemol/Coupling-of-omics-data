@@ -45,8 +45,10 @@ data_filtering <- function(data) {
   print("Fitting Michaelis-Menten function...")
   time_frame <- seq(from = 1, to = length(ratioData), by = 1)
   
-  #mmModel <- nls(sort(ratioData) ~ Vm*time_frame/(K+time_frame), start = list(Vm=max(ratioData), K=max(time_frame) / 2))
-  mmModel <- nls(sort(ratioData) ~ Vm/(1+exp(K+time_frame)), start = list(Vm=max(ratioData), K=max(time_frame) / 2))
+  mmModel <- nls(sort(ratioData) ~ Vm*time_frame/(K+time_frame), 
+                 start = list(Vm=max(ratioData), K=max(time_frame) / 2))
+  #mmModel <- nls(sort(ratioData) ~ Vm/(1+exp(-growthRate*(K+time_frame))), 
+   #              start = list(Vm=max(ratioData), K=max(time_frame)/2, growthRate=0.5))
   
   # parameters estimated including confidence interval
   coef(mmModel)
