@@ -10,8 +10,8 @@ extracting_data_KAT <- function(whichWeek="null", loadOrigData=FALSE, whichTaxLe
   # loading in the two datasheets
   print("Loading in data...")
   if (loadOrigData == TRUE) {
-    data_16s_original  <- read.table("Testdata/allData_16S_cleaned.txt")
-    data_qpcr_original <- read.table("Testdata/allData_qPCR_cleaned.txt") 
+    data_16s_original  <- read.table("Data/allData_16S_cleaned.txt")
+    data_qpcr_original <- read.table("Data/allData_qPCR_cleaned.txt") 
   }
   
   if (whichWeek != "null"){
