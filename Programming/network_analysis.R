@@ -34,7 +34,7 @@ source("Programming/extracting_data_KAT.R")
 source("Programming/data_filtering.R")
 
 # loading data
-chosenWeek      <- "Week 06"
+chosenWeek      <- "Week 02"
 chosenTaxonomy  <- "genus"
 inData <- extracting_data_KAT(whichWeek = chosenWeek, whichTaxLevel = chosenTaxonomy)
 
