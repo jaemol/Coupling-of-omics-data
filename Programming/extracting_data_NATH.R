@@ -71,4 +71,88 @@ if (whichTaxLevel=="genus") {
 df.full.metax <- cbind(array.phaebac.bin,df.fulldata.metax)
 
 
+#### Metabolomic data
+# loading in data
+df_metab_original <- read.csv("Data/metabolomic_day7,28,70.csv", header = TRUE, sep = ";")
+
+
+df_metab_noblanks_tmp1 = as.data.frame(t(df_metab_original))
+
+# naming the colnames header
+colnames(df_metab_noblanks_tmp1) = df_metab_noblanks_tmp1[1,]
+
+# removing the first row
+df_metab_noblanks = df_metab_noblanks_tmp1[-c(1),]
+
+# pure_data_qpcr  = subset(pure_data_qpcr, select = -c(PIG_DATE, OUA))
+
+# loading in metadata metabolomics sheet - changed data to .csv first, to make it work
+metadata_metabolomics  <- read.csv("Data/Metadata-metabolomics.csv", fill = TRUE, header = TRUE, sep = ";")
+
+
+# fetching two first rows / names
+rownam_samples_metab  <- rownames(df_metab_noblanks)
+addit_info_samples    <- df_metab_noblanks[,1]
+
+# running through the names, matching them with phyloseq naming
+metab_new_names <- rownames(df_metab_noblanks)
+
+for (i in 1:length(rownam_samples_metab)) {
+  
+  num_grep = as.numeric(unlist(regmatches(rownam_samples_metab[i], gregexpr("[[:digit:]]+", rownam_samples_metab[i]))))
+    
+  if (length(num_grep) == 1 && num_grep > 400) { 
+    # find which sample is talked about
+    metaDataRow = which(metadata_metabolomics$ï..Sample.no...MCCe. == num_grep)
+    
+    # checking for TDA
+    if(metadata_metabolomics$System[metaDataRow]=="TDA"){tdaBin="P"}else{tdaBin="D"}
+    
+    # finding biorep
+    biorepSample  = metadata_metabolomics$Bio.Rep[metaDataRow]
+    
+    # finding time
+    timeSample    = metadata_metabolomics$Time[metaDataRow] / 7
+    
+    # inserting into new name format
+    metab_new_names[i] = paste(tdaBin,biorepSample,timeSample, sep = "-")
+    
+  } 
+}
+
+# inserting the correct names
+rownames(df_metab_noblanks) = metab_new_names
+
+# removing the additional column with information (1)
+df_metab_noblanks_tmp3 = df_metab_noblanks[,-c(1)]
+
+
+# finding the common test IDs, to make a full dataset
+commonIDs <- intersect(sampleID.metatax, metab_new_names)
+
+#data_metab = cbind(metab_new_names,df_metab_noblanks_tmp3)
+#data_metax = cbind(sampleID.metatax,df.full.metax)
+
+data_metab = df_metab_noblanks_tmp3
+data_metax = df.full.metax
+  
+# only keeping the relevant testIDs
+df_metab = data_metab[metab_new_names %in% commonIDs,]
+df_metax = data_metax[sampleID.metatax %in% commonIDs,]
+  
+
+df_metab = df_metab[sort(commonIDs, decreasing = FALSE),]
+df_metax = df_metax[sort(commonIDs, decreasing = FALSE),]
+
+complete_data <- cbind(df_metax, df_metab, deparse.level = 1)
+
+
+
+
+
+
+
+
+
+
 
