@@ -94,7 +94,7 @@ summary(props_single_fullSet, numbNodes = 5L)
 plot(props_single_fullSet,
      labelScale = F,
      cexLabels = 1.3,
-     title1 = paste("Single network with Spearman",chosenWeek, chosenTaxonomy),
+     #title1 = paste("Single network with Spearman",chosenWeek, chosenTaxonomy),
      showTitle = T,
      cexTitle = 2.3,
      nodeColor = colVector)
