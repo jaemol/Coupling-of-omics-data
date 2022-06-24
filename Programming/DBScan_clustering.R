@@ -29,7 +29,13 @@ OUA     <- inData$OUA
 inData = subset(inData, select = -c(testID, OUA))
 #inData = t(inData)
 
-rownames(inData) <- testID
+#rownames(inData) <- testID
+
+
+data = outData
+phaobacBin <- data$array.phaebac.bin
+inData = subset(data, select = -c(array.phaebac.bin))
+#rownames(inData) <- commonIDs
 
 # selecting arbitrary cluster number, just for visualization
 #kmeans_model <- kmeans(inData, 3, nstart = 10)
@@ -40,19 +46,19 @@ rownames(inData) <- testID
 
 # making DBSCAN model
 inDataScale=data.frame(scale(inData, center = T, scale = T))
-findEpsi(t(inDataScale), minRange = 8, maxRange = 11, steps = .1 ,maxY=15,minP = 3)
+findEpsi(t(inDataScale), minRange = 2, maxRange = 5, steps = .1 ,maxY=15,minP = 3)
 
 ### results
 # week 02: epsilon = 9.1
 # Week 04: epsilon = 8.7
 ###
 
-DB=dbscan::dbscan(t(inDataScale),8.7,3); print(DB)
+DB=dbscan::dbscan(t(inDataScale),4.3,3); print(DB)
 
 clusVars=data.frame(Clus=DB$cluster,Vars=colnames(inDataScale))
-
+DB
 #sub <- subset(clusVars, Clus==5); print(sub)
-subset(clusVars, Clus==5)
+subset(clusVars, Clus==1)
 
 #plot(log1p(inData$DATA.Bacteria_Proteobacteria_Gammaproteobacteria_Enterobacterales_Enterobacteriaceae_Escherichia.Shigella),
  #    log1p(inData$Increp64))
