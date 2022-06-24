@@ -81,29 +81,27 @@ df.full.metax <- cbind(array.phaebac.bin,df.fulldata.metax)
 
 # loading in data
 df_metab_original <- read.csv("Data/metabolomic_day7,28,70.csv", header = TRUE, 
-                              sep = ";", stringsAsFactors = TRUE, na.strings = "NA", strip.white = TRUE)
+                              sep = ";", stringsAsFactors = FALSE, na.strings = "NA", strip.white = TRUE)
+
+df_metab_numOnly = read.csv("Data/metabolomic_day7,28,70_NumOnly.csv", header = FALSE,
+                            sep = ";", stringsAsFactors = FALSE, strip.white = TRUE)
+
+# naming columns and rows
+colnames(df_metab_numOnly) = colnames(df_metab_original)[-1]
+rownames(df_metab_numOnly) = df_metab_original[,1][-1]
 
 # transposing the data frame
-df_metab_noblanks_tmp1 = as.data.frame(t(df_metab_original))
-
-# naming the colnames header
-colnames(df_metab_noblanks_tmp1) = df_metab_noblanks_tmp1[1,]
-
-# removing the first row
-df_metab_noblanks = df_metab_noblanks_tmp1[-c(1),]
-
-# pure_data_qpcr  = subset(pure_data_qpcr, select = -c(PIG_DATE, OUA))
+df_metab_tmp1 = as.data.frame(t(df_metab_numOnly))
 
 # loading in metadata metabolomics sheet - changed data to .csv first, to make it work
 metadata_metabolomics  <- read.csv("Data/Metadata-metabolomics.csv", fill = TRUE, header = TRUE, sep = ";")
 
-
 # fetching two first rows / names
-rownam_samples_metab  <- rownames(df_metab_noblanks)
-addit_info_samples    <- df_metab_noblanks[,1]
+rownam_samples_metab  <- rownames(df_metab_tmp1)
+addit_info_samples    <- df_metab_original[,1]
 
 # running through the names, matching them with phyloseq naming
-metab_new_names <- rownames(df_metab_noblanks)
+metab_new_names <- rownam_samples_metab
 
 for (i in 1:length(rownam_samples_metab)) {
   
@@ -129,11 +127,10 @@ for (i in 1:length(rownam_samples_metab)) {
 }
 
 # inserting the correct names
-rownames(df_metab_noblanks) = metab_new_names
+rownames(df_metab_tmp1) = metab_new_names
 
 # removing the additional column with information (1)
-df_metab_noblanks_tmp3 = df_metab_noblanks[,-c(1)]
-
+df_metab_tmp2 = df_metab_tmp1[,-c(1)]
 
 # finding the common test IDs, to make a full dataset
 commonIDs <- intersect(sampleID.metatax, metab_new_names)
@@ -141,27 +138,29 @@ commonIDs <- intersect(sampleID.metatax, metab_new_names)
 #data_metab = cbind(metab_new_names,df_metab_noblanks_tmp3)
 #data_metax = cbind(sampleID.metatax,df.full.metax)
 
-data_metab = df_metab_noblanks_tmp3
+data_metab = df_metab_tmp2
 data_metax = df.full.metax
   
 # only keeping the relevant testIDs
 df_metab = data_metab[metab_new_names %in% commonIDs,]
 df_metax = data_metax[sampleID.metatax %in% commonIDs,]
   
+# normalizing the metabolomic data, percentage-based according to max peak overall
+df_metab_tmp3 = as.data.frame(lapply(df_metab, function(x){x/max(df_metab)}))
+colnames(df_metab_tmp3) = colnames(df_metab)
+rownames(df_metab_tmp3) = rownames(df_metab)
 
-df_metab = df_metab[sort(commonIDs, decreasing = FALSE),]
+
+df_metab = df_metab_tmp3[sort(commonIDs, decreasing = FALSE),]
 df_metax = df_metax[sort(commonIDs, decreasing = FALSE),]
-
-df_metab_1 = as.data.frame(as.numeric(df_metab))
-rownames(df_metab_1) = rownames(df_metab)
-colnames(df_metab_1) = colnames(df_metab)
-
+ 
 complete_data <- cbind(df_metax, df_metab, deparse.level = 1)
 
 
 # jogging around, finding max metabolite peak
-maxValuesMetab <- unlist(apply(df_metab, 2, max))
-max(maxValuesMetab)
+#maxValuesMetab <- unlist(apply(df_metab, 2, max))
+#max(maxValuesMetab)
+
 
 
 
