@@ -144,9 +144,10 @@ data_metax = df.full.metax
 # only keeping the relevant testIDs
 df_metab = data_metab[metab_new_names %in% commonIDs,]
 df_metax = data_metax[sampleID.metatax %in% commonIDs,]
-  
+
 # normalizing the metabolomic data, percentage-based according to max peak overall
-df_metab_tmp3 = as.data.frame(lapply(df_metab, function(x){x/max(df_metab)}))
+maxPeak <- max(df_metab)
+df_metab_tmp3 = as.data.frame(lapply(df_metab, function(x){x/maxPeak}))
 colnames(df_metab_tmp3) = colnames(df_metab)
 rownames(df_metab_tmp3) = rownames(df_metab)
 
