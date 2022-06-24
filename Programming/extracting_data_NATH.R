@@ -72,10 +72,18 @@ df.full.metax <- cbind(array.phaebac.bin,df.fulldata.metax)
 
 
 #### Metabolomic data
+
+# char_data <- read.csv("Data/metabolomic_day7,28,70.csv", stringsAsFactors = F)
+# num_data <- data.frame(data.matrix(char_data))
+# numeric_columns <- sapply(num_data,function(x){mean(as.numeric(is.na(x)))<0.5})
+# final_data <- data.frame(num_data[,numeric_columns], char_data[,!numeric_columns])
+
+
 # loading in data
-df_metab_original <- read.csv("Data/metabolomic_day7,28,70.csv", header = TRUE, sep = ";")
+df_metab_original <- read.csv("Data/metabolomic_day7,28,70.csv", header = TRUE, 
+                              sep = ";", stringsAsFactors = TRUE, na.strings = "NA", strip.white = TRUE)
 
-
+# transposing the data frame
 df_metab_noblanks_tmp1 = as.data.frame(t(df_metab_original))
 
 # naming the colnames header
@@ -144,9 +152,16 @@ df_metax = data_metax[sampleID.metatax %in% commonIDs,]
 df_metab = df_metab[sort(commonIDs, decreasing = FALSE),]
 df_metax = df_metax[sort(commonIDs, decreasing = FALSE),]
 
+df_metab_1 = as.data.frame(as.numeric(df_metab))
+rownames(df_metab_1) = rownames(df_metab)
+colnames(df_metab_1) = colnames(df_metab)
+
 complete_data <- cbind(df_metax, df_metab, deparse.level = 1)
 
 
+# jogging around, finding max metabolite peak
+maxValuesMetab <- unlist(apply(df_metab, 2, max))
+max(maxValuesMetab)
 
 
 
