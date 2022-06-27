@@ -7,7 +7,9 @@ library(stringr)
 library(gsubfn)
 
 # loading data
-data_phys_original  <- readRDS("Data/allDataMetataxonomicNCLTEE.rds")
+#data_phys_original  <- readRDS("Data/allDataMetataxonomicNCLTEE.rds")
+load("Data/ps.asv.reduced.wTree.RData")
+data_phys_original <- ps.new
 
 # The actual data
 df.otu.metatax      <- as.data.frame(data_phys_original@otu_table)
