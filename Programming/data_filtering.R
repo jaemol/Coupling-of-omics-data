@@ -127,7 +127,7 @@ data_filtering <- function(data) {
   plot(sort(CVData), main = "Relative standard deviation")
   
   
-  inData = cbind(testID, OUA, inData)
+  #inData = cbind(testID, OUA, inData)
   
   outData = inData
   

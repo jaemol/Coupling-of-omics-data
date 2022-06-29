@@ -31,12 +31,15 @@ library(NetCoMi)
 
 # loading functions
 source("Programming/extracting_data_KAT.R")
+source("Programming/extracting_data_NATH.R")
 source("Programming/data_filtering.R")
 
 # loading data
 chosenWeek      <- "Week 02"
-chosenTaxonomy  <- "genus"
+chosenTaxonomy  <- "species"
 inData <- extracting_data_KAT(whichWeek = chosenWeek, whichTaxLevel = chosenTaxonomy)
+
+inData <- extracting_data_NATH()
 
 # filtering data
 inData <- data_filtering(inData)
@@ -47,6 +50,7 @@ testID  <- inData$testID
 OUA     <- inData$OUA
 data = subset(inData, select = -c(testID, OUA))
 
+data = inData
 dataOneColumns <- grep(x = colnames(data), pattern = "DATA.*")
 
 
@@ -71,7 +75,7 @@ net_single_fullSet <- netConstruct(data,
                            #filtTaxPar = list(highestFreq = 100),
                            #filtSamp = "totalReads",
                            #filtSampPar = list(totalReads = 1000),
-                           measure = "spearman",thresh = 0.6,
+                           measure = "spearman",thresh = 0.5,
                            measurePar = list(nlambda=10, 
                                              rep.num=10),
                            normMethod = "none", 
