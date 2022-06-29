@@ -48,7 +48,7 @@ inData = subset(data, select = -c(array.phaebac.bin))
 
 # making DBSCAN model
 inDataScale=data.frame(scale(inData, center = T, scale = T))
-findEpsi(t(inDataScale), minRange = 2, maxRange = 5, steps = .1 ,maxY=15,minP = 3)
+findEpsi(t(inDataScale), minRange = 2, maxRange = 10, steps = .1 ,maxY=15,minP = 3)
 
 ### results
 # week 02: epsilon = 9.1

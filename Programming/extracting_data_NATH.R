@@ -150,7 +150,10 @@ extracting_data_NATH <- function(whichTaxLevel="species") {
   
   # normalizing the metabolomic data, percentage-based according to max peak overall
   maxPeak <- max(df_metab)
-  df_metab_tmp3 = as.data.frame(lapply(df_metab, function(x){x/maxPeak}))
+  #df_metab_tmp3 = as.data.frame(lapply(df_metab, function(x){x/maxPeak}))
+  
+  df_metab_tmp3 = as.data.frame(apply(df_metab,MARGIN = 2, function(x){x/max(x)}))
+  
   colnames(df_metab_tmp3) = colnames(df_metab)
   rownames(df_metab_tmp3) = rownames(df_metab)
   

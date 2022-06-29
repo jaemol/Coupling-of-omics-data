@@ -70,19 +70,19 @@ if (chosenTaxonomy=="genus"){
 
 
 # building single network with SPRING as association measure - Full dataset, both treated and untreated
-net_single_fullSet <- netConstruct(data,
+net_single_fullSet <- netConstruct((data),
                            #filtTax = "highestFreq",
                            #filtTaxPar = list(highestFreq = 100),
                            #filtSamp = "totalReads",
                            #filtSampPar = list(totalReads = 1000),
-                           measure = "spearman",thresh = 0.5,
+                           measure = "pearson",thresh = 0.5,
                            measurePar = list(nlambda=10, 
                                              rep.num=10),
                            normMethod = "none", 
                            zeroMethod = "none",
                            sparsMethod = "threshold", 
                            dissFunc = "signed",
-                           verbose = 3,
+                           verbose = 3,weighted = T,
                            seed = 123456)
 
 props_single_fullSet <- netAnalyze(net_single_fullSet, 
@@ -114,6 +114,16 @@ legend(x=0.85,y=0.9,legend=c("Positive","Negative"),
 legend(x=0.85,y=0.6,legend=c("Metataxonomic","Genomic"),
        cex=0.6,col=c("green","red"),pch=c(16,16),lwd = c(3,3))
 
+
+
+###
+
+cor(log1p(data$Jannaschia[-13]),log1p(data$`943.99194`[-13]),method = "pear" )^2
+plot(log1p(data$Jannaschia[-13]),log1p(data$`943.99194`[-13]))
+LM=lm(log1p(data$Jannaschia[-13])~log1p(data$`943.99194`[-13]))
+summary(LM)
+plot(LM)
+###
 
 #cor(inData$TolC1, inData$Escherichia.Shigella, method = "spear")
 
@@ -188,3 +198,6 @@ legend(x=0.85,y=0.9,legend=c("Metataxonomic","Genomic"),
        cex=0.6,col=c("green","red"),pch=c(16,16),lwd = c(3,3))
 
 summary(props_single_treated, numbNodes = 5L)
+
+
+plot()
