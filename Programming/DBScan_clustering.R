@@ -66,5 +66,5 @@ subset(clusVars, Clus==1)
  #    log1p(inData$Increp64))
 #plot(log1p(inData$noquote(sub[1,2])), log1p(inData$noquote(sub[5,2])))
 
-
+plot(inDataScale[DB$cluster %in% 1])
      
