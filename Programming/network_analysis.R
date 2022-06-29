@@ -99,9 +99,10 @@ plot(props_single_fullSet,
      labelScale = F,
      cexLabels = 1.3,
      #title1 = paste("Single network with Spearman",chosenWeek, chosenTaxonomy),
+     title1 = "Single network with Spearman",
      showTitle = T,
-     cexTitle = 2.3,
-     nodeColor = colVector)
+     cexTitle = 2.3)
+     #nodeColor = colVector)
      
 # adding legend
 #legend("topright", cex = 0.5, title = "estimated association:",
