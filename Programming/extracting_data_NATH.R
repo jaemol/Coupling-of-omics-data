@@ -7,7 +7,7 @@ library(stringr)
 library(gsubfn)
 
 # beginning function
-extracting_data_NATH <- function(whichTaxLevel="species") {
+extracting_data_NATH <- function(whichWeek="null", whichTaxLevel="species") {
 
   # loading data
   #data_phys_original  <- readRDS("Data/allDataMetataxonomicNCLTEE.rds")
@@ -163,10 +163,11 @@ extracting_data_NATH <- function(whichTaxLevel="species") {
    
   complete_data <- cbind(df_metax, df_metab, deparse.level = 1)
   
-  
-  # jogging around, finding max metabolite peak
-  #maxValuesMetab <- unlist(apply(df_metab, 2, max))
-  #max(maxValuesMetab)
+  # choosing a specific week of data if wanted
+  if (whichWeek != "null") {
+    # can only select week number 1, 4, or 10
+    complete_data = complete_data[gsub(".+-(?=\\d+$)", "", rownames(complete_data), perl = TRUE)==whichWeek,]
+  }
 }
 
 
