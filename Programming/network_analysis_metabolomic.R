@@ -36,11 +36,11 @@ source("Programming/data_filtering.R")
 # loading data
 chosenDataSet = "metab"
 chosenTaxonomy  <- "species"
-chosenWeek      <- "1"
+chosenWeek      <- "10"
 inData <- extracting_data_NATH(whichWeek=chosenWeek, whichTaxLevel=chosenTaxonomy)
 
 # filtering data
-inData <- data_filtering(data=inData, whichDataSet=chosenDataSet)
+inData <- data_filtering(data=inData, whichDataSet=chosenDataSet, whichWeek=chosenWeek)
 
 data = inData
 dataOneColumns <- grep(x = colnames(data), pattern = "DATA.*")
@@ -67,7 +67,7 @@ net_single_fullSet <- netConstruct((data),
                                    #filtTaxPar = list(highestFreq = 100),
                                    #filtSamp = "totalReads",
                                    #filtSampPar = list(totalReads = 1000),
-                                   measure = "pearson",thresh = 0.5,
+                                   measure = "spearman",thresh = 0.5,
                                    measurePar = list(nlambda=10, 
                                                      rep.num=10),
                                    normMethod = "none", 

@@ -84,10 +84,10 @@ extracting_data_NATH <- function(whichWeek="null", whichTaxLevel="species") {
   
   # loading in data
   df_metab_original <- read.csv("Data/metabolomic_day7,28,70.csv", header = TRUE, 
-                                sep = ";", stringsAsFactors = FALSE, na.strings = "NA", strip.white = TRUE)
+                                sep = ";", stringsAsFactors = FALSE, strip.white = TRUE)
   
   df_metab_numOnly = read.csv("Data/metabolomic_day7,28,70_NumOnly.csv", header = FALSE,
-                              sep = ";", stringsAsFactors = FALSE, strip.white = TRUE)
+                              sep = ";", stringsAsFactors = FALSE, strip.white = TRUE, fill = TRUE)
   
   # naming columns and rows
   colnames(df_metab_numOnly) = colnames(df_metab_original)[-1]
@@ -160,6 +160,9 @@ extracting_data_NATH <- function(whichWeek="null", whichTaxLevel="species") {
   
   df_metab = df_metab_tmp3[sort(commonIDs, decreasing = FALSE),]
   df_metax = df_metax[sort(commonIDs, decreasing = FALSE),]
+  
+  # making sure no NaN are present
+  #df_metab = na.omit(df_metab)
    
   complete_data <- cbind(df_metax, df_metab, deparse.level = 1)
   
