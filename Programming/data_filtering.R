@@ -6,21 +6,24 @@
 #library(ggplot2)
 library(gsubfn)
 
-options(warn = 0) # set=2 to end loops when warnings occur
+options(warn = 2) # set=2 to end loops when warnings occur
 
-data_filtering <- function(data) {
-  # Gonna write it out first, then make it into a function
-  #inData = data
-  #testID  <- inData$testID
-  #OUA     <- inData$OUA
+data_filtering <- function(data, whichDataSet) {
+  # whichDataSet can either be 'metab' or 'genom'
+  if (whichDataSet == "metab") {
+    inData = data
+    
+  } else if (whichDataSet == "genom")  {
+    inData = data
+    testID  <- inData$testID
+    OUA     <- inData$OUA
+    inData = subset(inData, select = -c(testID, OUA))
+    
+  } else {
+    print("The chosen data set can either be 'metab' or 'genom', depending on which data set you are feeding the filtering function")
+  }
   
-  #inData = subset(inData, select = -c(testID, OUA))
-  
-  data = complete_data
-  phaobacBin <- data$array.phaebac.bin
-  inData = subset(data, select = -c(array.phaebac.bin))
-  
-  
+
   # if the variance is equal to zero, then its a zero-column
   #which(unname(apply(inData, 2, var))==0)
   throwAway <- which(apply(inData, 2, var)==0)[]
@@ -50,10 +53,11 @@ data_filtering <- function(data) {
   print("Fitting Michaelis-Menten function...")
   time_frame <- seq(from = 1, to = length(ratioData), by = 1)
   
-  mmModel <- nls(sort(ratioData) ~ Vm*time_frame/(K+time_frame), 
+  # tryCatch(mmModel <- nls(sort(ratioData) ~ Vm*time_frame/(K+time_frame),
+  #                         start = list(Vm=max(ratioData), K=max(time_frame) / 2)), 
+  #          warning("The Michaelis-Menten function could not be made using this data, moving on"))
+  mmModel <- nls(sort(ratioData) ~ Vm*time_frame/(K+time_frame),
                  start = list(Vm=max(ratioData), K=max(time_frame) / 2))
-  #mmModel <- nls(sort(ratioData) ~ Vm/(1+exp(-growthRate*(K+time_frame))), 
-   #              start = list(Vm=max(ratioData), K=max(time_frame)/2, growthRate=0.5))
   
   # parameters estimated including confidence interval
   coef(mmModel)

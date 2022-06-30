@@ -168,6 +168,10 @@ extracting_data_NATH <- function(whichWeek="null", whichTaxLevel="species") {
     # can only select week number 1, 4, or 10
     complete_data = complete_data[gsub(".+-(?=\\d+$)", "", rownames(complete_data), perl = TRUE)==whichWeek,]
   }
+  
+  rm(list=setdiff(ls(), c("complete_data")))
+  
+  return(complete_data)
 }
 
 
