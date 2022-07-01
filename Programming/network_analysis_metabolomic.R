@@ -34,15 +34,34 @@ source("Programming/extracting_data_NATH.R")
 source("Programming/data_filtering.R")
 
 # loading data
-chosenDataSet = "metab"
-chosenTaxonomy  <- "species"
-chosenWeek      <- "10"
+chosenDataSet = "metab"         # "metab" or "genom"
+chosenTaxonomy  <- "species"    # "species" or "genus"   
+chosenWeek      <- "null"       # "1", "4", or "10"
 inData <- extracting_data_NATH(whichWeek=chosenWeek, whichTaxLevel=chosenTaxonomy)
 
 # filtering data
 inData <- data_filtering(data=inData, whichDataSet=chosenDataSet, whichWeek=chosenWeek)
 
-data = inData
+# inData_week1 <- data_filtering(data = extracting_data_NATH(whichWeek = "1"), whichDataSet = "metab", whichWeek = 1)
+
+
+### for choosing the different days, with the maximum filtering of the full data set
+
+# can only select week number 1, 4, or 10
+choiceOfWeekHere <- "1"
+if (choiceOfWeekHere != "null") {
+  data = inData[gsub(".+-(?=\\d+$)", "", rownames(inData), perl = TRUE)==choiceOfWeekHere,]  
+} else {
+  data = inData  
+}
+
+# or if wanted, make your own data here: 
+# data_week1  = inData[gsub(".+-(?=\\d+$)", "", rownames(inData), perl = TRUE)=="1",]
+# data_week4  = inData[gsub(".+-(?=\\d+$)", "", rownames(inData), perl = TRUE)=="4",]
+# data_week10 = inData[gsub(".+-(?=\\d+$)", "", rownames(inData), perl = TRUE)=="10",]
+
+
+
 dataOneColumns <- grep(x = colnames(data), pattern = "DATA.*")
 
 
@@ -61,13 +80,13 @@ if (chosenTaxonomy=="genus"){
 }
 
 
-# building single network with SPRING as association measure - Full dataset, both treated and untreated
+# building single network with spearman as association measure - Full dataset, both treated and untreated
 net_single_fullSet <- netConstruct((data),
                                    #filtTax = "highestFreq",
                                    #filtTaxPar = list(highestFreq = 100),
                                    #filtSamp = "totalReads",
                                    #filtSampPar = list(totalReads = 1000),
-                                   measure = "spearman",thresh = 0.5,
+                                   measure = "spearman",thresh = 0.65,
                                    measurePar = list(nlambda=10, 
                                                      rep.num=10),
                                    normMethod = "none", 
@@ -89,12 +108,19 @@ summary(props_single_fullSet, numbNodes = 5L)
 
 plot(props_single_fullSet,
      labelScale = F,
+     shortenLabels = "none",
+     nodeFilter = "clustMin",
+     #nodeFilter = "highestBetween",
+     nodeFilterPar = 50,
      cexLabels = 1.3,
-     #title1 = paste("Single network with Spearman",chosenWeek, chosenTaxonomy),
-     title1 = "Single network with Spearman",
+     title1 = paste("Single network with Spearman\nWeek:", choiceOfWeekHere, "taxonomy:", chosenTaxonomy),
+     #title1 = "Single network with Spearman",
      showTitle = T,
-     cexTitle = 2.3)
+     cexTitle = 1.7)
 #nodeColor = colVector)
+
+plot.microNetProps
+
 
 # adding legend
 #legend("topright", cex = 0.5, title = "estimated association:",
@@ -103,7 +129,7 @@ plot(props_single_fullSet,
 
 legend(x=0.85,y=0.9,legend=c("Positive","Negative"),
        cex=0.6,col=c("green","red"),pch=c(".","."),lwd = c(3,3))
-legend(x=0.85,y=0.6,legend=c("Metataxonomic","Genomic"),
+legend(x=0.85,y=0.6,legend=c("Metataxonomic","Metabolomic"),
        cex=0.6,col=c("green","red"),pch=c(16,16),lwd = c(3,3))
 
 
@@ -120,76 +146,3 @@ plot(LM)
 #cor(inData$TolC1, inData$Escherichia.Shigella, method = "spear")
 
 
-# network untreated, single network with spearman association
-data_untreated <- data[which(OUA==0),]
-net_single_untreated <- netConstruct(data_untreated,
-                                     #filtTax = "highestFreq",
-                                     #filtTaxPar = list(highestFreq = 100),
-                                     #filtSamp = "totalReads",
-                                     #filtSampPar = list(totalReads = 1000),
-                                     measure = "spearman",thresh = 0.6,
-                                     measurePar = list(nlambda=10, 
-                                                       rep.num=10),
-                                     normMethod = "none", 
-                                     zeroMethod = "none",
-                                     sparsMethod = "threshold", 
-                                     dissFunc = "signed",
-                                     verbose = 3,
-                                     seed = 123456)
-
-props_single_untreated <- netAnalyze(net_single_untreated, 
-                                     centrLCC = TRUE,
-                                     clustMethod = "cluster_fast_greedy",
-                                     hubPar = "eigenvector",
-                                     weightDeg = FALSE, normDeg = FALSE)
-
-plot(props_single_untreated,
-     labelScale = F,
-     cexLabels = 1.3,
-     title1 = paste("Single network with Spearman, untreated", chosenWeek, chosenTaxonomy),
-     showTitle = T,
-     cexTitle = 2.3,
-     nodeColor = colVector)
-
-legend(x=0.85,y=0.9,legend=c("Metataxonomic","Genomic"),
-       cex=0.6,col=c("green","red"),pch=c(16,16),lwd = c(3,3))
-
-
-# network treated, single network with spearman association
-data_treated <- data[which(OUA==1),]
-net_single_treated <- netConstruct(data_treated,
-                                   #filtTax = "highestFreq",
-                                   #filtTaxPar = list(highestFreq = 100),
-                                   #filtSamp = "totalReads",
-                                   #filtSampPar = list(totalReads = 1000),
-                                   measure = "spearman",thresh = 0.5,
-                                   measurePar = list(nlambda=10, 
-                                                     rep.num=10),
-                                   normMethod = "none", 
-                                   zeroMethod = "none",
-                                   sparsMethod = "threshold", 
-                                   dissFunc = "signed",
-                                   verbose = 3,
-                                   seed = 123456)
-
-props_single_treated <- netAnalyze(net_single_treated, 
-                                   centrLCC = TRUE,
-                                   clustMethod = "cluster_fast_greedy",
-                                   hubPar = "eigenvector",
-                                   weightDeg = FALSE, normDeg = FALSE)
-
-plot(props_single_treated,
-     labelScale = F,
-     cexLabels = 1.3,
-     title1 = paste("Single network with Spearman, treated", chosenWeek, chosenTaxonomy),
-     showTitle = T,
-     cexTitle = 2.3,
-     nodeColor = colVector)
-
-legend(x=0.85,y=0.9,legend=c("Metataxonomic","Genomic"),
-       cex=0.6,col=c("green","red"),pch=c(16,16),lwd = c(3,3))
-
-summary(props_single_treated, numbNodes = 5L)
-
-
-plot()
