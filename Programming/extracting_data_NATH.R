@@ -148,7 +148,7 @@ extracting_data_NATH <- function(whichWeek="null", whichTaxLevel="species") {
   df_metab = data_metab[metab_new_names %in% commonIDs,]
   df_metax = data_metax[sampleID.metatax %in% commonIDs,]
   
-  # normalizing the metabolomic data, percentage-based according to max peak overall
+  # normalizing the metabolomic data, percentage-based according to max peak per feature
   maxPeak <- max(df_metab)
   #df_metab_tmp3 = as.data.frame(lapply(df_metab, function(x){x/maxPeak}))
   
