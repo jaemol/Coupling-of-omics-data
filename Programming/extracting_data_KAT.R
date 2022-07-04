@@ -14,11 +14,13 @@ extracting_data_KAT <- function(whichWeek="null", loadOrigData=FALSE, whichTaxLe
     data_qpcr_original <- read.table("Data/allData_qPCR_cleaned.txt") 
   }
   
+  # filtering upon the selected week wished to examine
   if (whichWeek != "null"){
     # Finding just the results from chosen week
     data_16s   <- data_16s_original[data_16s_original$SAMPLEWEEK == whichWeek,]
     data_qpcr  <- data_qpcr_original[data_qpcr_original$SAMPLEWEEK == whichWeek,]
   } else {
+    # if no specific week are chosen, include complete data set
     data_16s   <- data_16s_original
     data_qpcr  <- data_qpcr_original
   }
