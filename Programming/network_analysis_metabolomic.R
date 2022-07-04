@@ -4,27 +4,27 @@
 
 ## installing package first time 
 
-if(!requireNamespace("BiocManager", quietly = TRUE)){
-  utils::install.packages("BiocManager")
-}
-
-BiocManager::install(pkgs = c("Biobase", "doSNOW", "fdrtool", "filematrix",
-                              "foreach", "graphics", "grDevices", "gtools",
-                              "huge", "igraph", "MASS", "Matrix", "phyloseq",
-                              "pulsar", "qgraph", "Rdpack", "snow", "SPRING",
-                              "stats", "utils", "vegan", "WGCNA"))
-
-BiocManager::install("GO.db")
-
-
-devtools::install_github("GraceYoon/SPRING")
-devtools::install_github("zdk123/SpiecEasi")
-
-devtools::install_github("stefpeschel/NetCoMi", 
-                         dependencies = c("Depends", "Imports"),
-                         repos = c("https://cloud.r-project.org/",
-                                   BiocManager::repositories()))
-
+# if(!requireNamespace("BiocManager", quietly = TRUE)){
+#   utils::install.packages("BiocManager")
+# }
+# 
+# BiocManager::install(pkgs = c("Biobase", "doSNOW", "fdrtool", "filematrix",
+#                               "foreach", "graphics", "grDevices", "gtools",
+#                               "huge", "igraph", "MASS", "Matrix", "phyloseq",
+#                               "pulsar", "qgraph", "Rdpack", "snow", "SPRING",
+#                               "stats", "utils", "vegan", "WGCNA"))
+# 
+# BiocManager::install("GO.db")
+# 
+# 
+# devtools::install_github("GraceYoon/SPRING")
+# devtools::install_github("zdk123/SpiecEasi")
+# 
+# devtools::install_github("stefpeschel/NetCoMi", 
+#                          dependencies = c("Depends", "Imports"),
+#                          repos = c("https://cloud.r-project.org/",
+#                                    BiocManager::repositories()))
+# 
 
 # loading NetCoMi library
 library(NetCoMi)
@@ -48,7 +48,7 @@ inData <- data_filtering(data=inData, whichDataSet=chosenDataSet, whichWeek=chos
 ### for choosing the different days, with the maximum filtering of the full data set
 
 # can only select week number 1, 4, or 10
-choiceOfWeekHere <- "1"
+choiceOfWeekHere <- "null"
 if (choiceOfWeekHere != "null") {
   data = inData[gsub(".+-(?=\\d+$)", "", rownames(inData), perl = TRUE)==choiceOfWeekHere,]  
 } else {
@@ -80,6 +80,7 @@ if (chosenTaxonomy=="genus"){
 }
 
 
+############################ 
 # building single network with spearman as association measure - Full dataset, both treated and untreated
 net_single_fullSet <- netConstruct((data),
                                    #filtTax = "highestFreq",
@@ -109,9 +110,9 @@ summary(props_single_fullSet, numbNodes = 5L)
 plot(props_single_fullSet,
      labelScale = F,
      shortenLabels = "none",
-     nodeFilter = "clustMin",
+     #nodeFilter = "clustMin",
      #nodeFilter = "highestBetween",
-     nodeFilterPar = 50,
+     #nodeFilterPar = 50,
      cexLabels = 1.3,
      title1 = paste("Single network with Spearman\nWeek:", choiceOfWeekHere, "taxonomy:", chosenTaxonomy),
      #title1 = "Single network with Spearman",
@@ -145,4 +146,69 @@ plot(LM)
 
 #cor(inData$TolC1, inData$Escherichia.Shigella, method = "spear")
 
+
+
+############################ 
+# compare two networks differentiated upon presence of TDA or not
+# splitting the data set of all weeks into two; TDA and noTDA
+data_TDA    <- data[substr(rownames(data), 1, 1) == "D",]
+data_noTDA  <- data[substr(rownames(data), 1, 1) == "P",]
+
+# Network construction
+net_TDA <- netConstruct(data = data_noTDA, 
+                        data2 = data_TDA,  
+                        filtTax = "highestVar",
+                        filtTaxPar = list(highestVar = 50),
+                        measure = "spearman", thresh = 0.65,
+                        measurePar = list(nlambda=10, 
+                                         rep.num=10),
+                        normMethod = "none", 
+                        zeroMethod = "none",
+                        sparsMethod = "threshold", 
+                        dissFunc = "signed",
+                        verbose = 3, weighted = T,
+                        seed = 123456)
+
+props_TDA <- netAnalyze(net_TDA, 
+                        centrLCC = FALSE,
+                        avDissIgnoreInf = TRUE,
+                        sPathNorm = FALSE,
+                        clustMethod = "cluster_fast_greedy",
+                        #hubPar = c("degree", "between", "closeness"),
+                        hubPar = "eigenvector",
+                        hubQuant = 0.9,
+                        lnormFit = TRUE,
+                        normDeg = FALSE,
+                        normBetw = FALSE,
+                        normClose = FALSE,
+                        normEigen = FALSE)
+
+summary(props_TDA)
+
+
+plot(props_TDA, 
+     sameLayout = TRUE, 
+     nodeColor = "cluster",
+     nodeSize = "mclr",
+     labelScale = FALSE,
+     shortenLabels = "none",
+     cexNodes = 1.5, 
+     cexLabels = 1.3,
+     cexHubLabels = 1,
+     cexTitle = 3.7,
+     groupNames = c("No TDA", "TDA"),
+     hubBorderCol  = "gray40")
+
+legend("bottomleft", title = "estimated association:", legend = c("+","-"), 
+       col = c("#009900","red"), inset = 0.02, cex = 2, lty = 1, lwd = 4, 
+       bty = "n", horiz = TRUE)
+
+
+comp_TDA <- netCompare(props_TDA, permTest = FALSE, verbose = FALSE)
+
+summary(comp_TDA, 
+        groupNames = c("No TDA", "TDA"),
+        showCentr = c("degree", "between", "closeness"), 
+        #showCentr = c("eigenvector"),
+        numbNodes = 5)
 
