@@ -185,6 +185,12 @@ props_TDA <- netAnalyze(net_TDA,
 
 summary(props_TDA)
 
+# for saving the plot as an image
+# png(filename = "TDA_Vs_NoTDA_FullSet.png",
+#     width = 4000, height = 3000,units = "px", pointsize = 12,
+#     bg = "white", res = 300, family = "", restoreConsole = TRUE,
+#     type = c("windows", "cairo", "cairo-png"),
+#     symbolfamily = "default")
 
 plot(props_TDA, 
      sameLayout = TRUE, 
@@ -198,6 +204,7 @@ plot(props_TDA,
      cexTitle = 3.7,
      groupNames = c("No TDA", "TDA"),
      hubBorderCol  = "gray40")
+# dev.off() # shutting off image saving
 
 legend("bottomleft", title = "estimated association:", legend = c("+","-"), 
        col = c("#009900","red"), inset = 0.02, cex = 2, lty = 1, lwd = 4, 
@@ -212,3 +219,101 @@ summary(comp_TDA,
         #showCentr = c("eigenvector"),
         numbNodes = 5)
 
+############################ 
+# compare two networks differentiated upon presence of TDA or not
+# splitting the data set of the chosen week into two; TDA and noTDA
+
+
+# can only select week number 1, 4, or 10
+choiceOfWeekHere <- "4"
+if (choiceOfWeekHere != "null") {
+  data_weekly = inData[gsub(".+-(?=\\d+$)", "", rownames(inData), perl = TRUE)==choiceOfWeekHere,]  
+} else {
+  data_weekly = inData  
+}
+
+
+if (chosenTaxonomy=="genus"){
+  colnames(data_weekly)=gsub("DATA.Bacteria_[A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.](.*)","\\1",colnames(data_weekly))
+  colnames(data_weekly)=gsub("DATA.Archaea_[A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.](.*)","\\1",colnames(data_weekly))
+} else {
+  colnames(data_weekly)=gsub("DATA.Bacteria_[A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.](.*)[_.](.*)","\\1",colnames(data_weekly))
+  colnames(data_weekly)=gsub("DATA.Archaea_[A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.](.*)[_.](.*)","\\1",colnames(data_weekly))
+}
+
+
+data_weekly_TDA    <- data_weekly[substr(rownames(data_weekly), 1, 1) == "D",]
+data_weekly_noTDA  <- data_weekly[substr(rownames(data_weekly), 1, 1) == "P",]
+
+# Network construction
+net_weekly_TDA <- netConstruct(data = data_weekly_noTDA, 
+                        data2 = data_weekly_TDA,  
+                        filtTax = "highestVar",
+                        filtTaxPar = list(highestVar = 50),
+                        measure = "spearman", thresh = 0.8,
+                        measurePar = list(nlambda=10, 
+                                          rep.num=10),
+                        normMethod = "none", 
+                        zeroMethod = "none",
+                        sparsMethod = "threshold", 
+                        dissFunc = "signed",
+                        verbose = 3, weighted = T,
+                        seed = 123456)
+
+props_weekly_TDA <- netAnalyze(net_weekly_TDA, 
+                        centrLCC = FALSE,
+                        avDissIgnoreInf = TRUE,
+                        sPathNorm = FALSE,
+                        clustMethod = "cluster_fast_greedy",
+                        #hubPar = c("degree", "between", "closeness"),
+                        hubPar = "eigenvector",
+                        hubQuant = 0.9,
+                        lnormFit = TRUE,
+                        normDeg = FALSE,
+                        normBetw = FALSE,
+                        normClose = FALSE,
+                        normEigen = FALSE)
+
+#summary(props_weekly_TDA)
+
+# using png to save plot
+# png(filename = paste("TDA_Vs_NoTDA_Week_",choiceOfWeekHere,".png"), 
+#     width = 4000, height = 3000,units = "px", pointsize = 12,
+#     bg = "white", res = 300, family = "", restoreConsole = TRUE,
+#     type = c("windows", "cairo", "cairo-png"),
+#     symbolfamily = "default")
+
+
+plot(props_weekly_TDA, 
+     sameLayout = TRUE, 
+     nodeColor = "cluster",
+     nodeSize = "mclr",
+     labelScale = FALSE,
+     shortenLabels = "none",
+     cexNodes = 1.5, 
+     cexLabels = 1.3,
+     cexHubLabels = 1,
+     # showTitle = TRUE,
+     # title2 = paste("Week",choiceOfWeekHere),
+     #title(main = paste("Week",choiceOfWeekHere)),
+     #cexTitle = 3.7,
+     cexTitle = 2.5,
+     groupNames = c(paste("No TDA\nWeek:",choiceOfWeekHere), paste("TDA\nWeek:",choiceOfWeekHere)),
+     hubBorderCol  = "gray40")
+
+# using png() and dev.off to save the plot
+# dev.off()
+
+
+# legend("bottomleft", title = "estimated association:", legend = c("+","-"), 
+#        col = c("#009900","red"), inset = 0.02, cex = 2, lty = 1, lwd = 4, 
+#        bty = "n", horiz = TRUE)
+
+
+comp_weekly_TDA <- netCompare(props_weekly_TDA, permTest = FALSE, verbose = FALSE)
+
+summary(comp_weekly_TDA, 
+        groupNames = c(paste("No TDA\nWeek:",choiceOfWeekHere),paste("TDA\nWeek:",choiceOfWeekHere)),
+        showCentr = c("degree", "between", "closeness"), 
+        #showCentr = c("eigenvector"),
+        numbNodes = 5)
