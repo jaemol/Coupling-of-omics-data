@@ -157,8 +157,8 @@ data_noTDA  <- data[substr(rownames(data), 1, 1) == "P",]
 # Network construction
 net_TDA <- netConstruct(data = data_noTDA, 
                         data2 = data_TDA,  
-                        filtTax = "highestVar",
-                        filtTaxPar = list(highestVar = 50),
+                        #filtTax = "highestVar",
+                        #filtTaxPar = list(highestVar = 50),
                         measure = "spearman", thresh = 0.65,
                         measurePar = list(nlambda=10, 
                                          rep.num=10),
