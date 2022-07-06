@@ -34,10 +34,11 @@ source("Programming/extracting_data_NATH.R")
 source("Programming/data_filtering.R")
 
 # loading data
-chosenDataSet = "metab"         # "metab" or "genom"
-chosenTaxonomy  <- "species"    # "species" or "genus"   
-chosenWeek      <- "null"       # "1", "4", or "10"
-inData <- extracting_data_NATH(whichWeek=chosenWeek, whichTaxLevel=chosenTaxonomy)
+chosenDataSet     = "metab"       # "metab" or "genom"
+chosenTaxonomy    <- "species"    # "species" or "genus"   
+chosenWeek        <- "null"       # "1", "4", or "10"
+chosenCutoffMass  <- 200          # arbitrary value, removing based on column name
+inData <- extracting_data_NATH(whichWeek=chosenWeek, whichTaxLevel=chosenTaxonomy, cutOffMetabMass = chosenCutoffMass)
 
 # filtering data
 inData <- data_filtering(data=inData, whichDataSet=chosenDataSet, whichWeek=chosenWeek)
@@ -157,8 +158,8 @@ data_noTDA  <- data[substr(rownames(data), 1, 1) == "P",]
 # Network construction
 net_TDA <- netConstruct(data = data_noTDA, 
                         data2 = data_TDA,  
-                        #filtTax = "highestVar",
-                        #filtTaxPar = list(highestVar = 50),
+                        filtTax = "highestVar",
+                        filtTaxPar = list(highestVar = 50),
                         measure = "spearman", thresh = 0.65,
                         measurePar = list(nlambda=10, 
                                          rep.num=10),
@@ -225,7 +226,7 @@ summary(comp_TDA,
 
 
 # can only select week number 1, 4, or 10
-choiceOfWeekHere <- "4"
+choiceOfWeekHere <- "1"
 if (choiceOfWeekHere != "null") {
   data_weekly = inData[gsub(".+-(?=\\d+$)", "", rownames(inData), perl = TRUE)==choiceOfWeekHere,]  
 } else {
@@ -248,8 +249,8 @@ data_weekly_noTDA  <- data_weekly[substr(rownames(data_weekly), 1, 1) == "P",]
 # Network construction
 net_weekly_TDA <- netConstruct(data = data_weekly_noTDA, 
                         data2 = data_weekly_TDA,  
-                        filtTax = "highestVar",
-                        filtTaxPar = list(highestVar = 50),
+                        #filtTax = "highestVar",
+                        #filtTaxPar = list(highestVar = 50),
                         measure = "spearman", thresh = 0.8,
                         measurePar = list(nlambda=10, 
                                           rep.num=10),
