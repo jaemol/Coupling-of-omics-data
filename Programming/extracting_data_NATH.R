@@ -7,8 +7,7 @@ library(stringr)
 library(gsubfn)
 
 # beginning function
-extracting_data_NATH <- function(whichWeek="null", whichTaxLevel="species") {
-
+extracting_data_NATH <- function(whichWeek="null", whichTaxLevel="species", cutOffMetabMass) {
   # loading data
   #data_phys_original  <- readRDS("Data/allDataMetataxonomicNCLTEE.rds")
   load("Data/ps.asv.reduced.wTree.RData")
@@ -141,24 +140,28 @@ extracting_data_NATH <- function(whichWeek="null", whichTaxLevel="species") {
   #data_metab = cbind(metab_new_names,df_metab_noblanks_tmp3)
   #data_metax = cbind(sampleID.metatax,df.full.metax)
   
-  data_metab = df_metab_tmp2
+  # removing all features with masses <= 200 m/Z (mass over charge)
+  metabFeatToDrop <- which(as.numeric(colnames(df_metab_tmp2)) <= cutOffMetabMass)
+  df_metab_tmp3   <- subset(df_metab_tmp2, select = -c(metabFeatToDrop))
+  
+  
+  data_metab = df_metab_tmp3
   data_metax = df.full.metax
     
   # only keeping the relevant testIDs
   df_metab = data_metab[metab_new_names %in% commonIDs,]
   df_metax = data_metax[sampleID.metatax %in% commonIDs,]
   
+  
   # normalizing the metabolomic data, percentage-based according to max peak per feature
-  maxPeak <- max(df_metab)
-  #df_metab_tmp3 = as.data.frame(lapply(df_metab, function(x){x/maxPeak}))
+  ### OBS COMMENT: Maybe we need to normalize per median ###
+  df_metab_tmp4 = as.data.frame(apply(df_metab,MARGIN = 2, function(x){x/max(x)}))
   
-  df_metab_tmp3 = as.data.frame(apply(df_metab,MARGIN = 2, function(x){x/max(x)}))
-  
-  colnames(df_metab_tmp3) = colnames(df_metab)
-  rownames(df_metab_tmp3) = rownames(df_metab)
+  colnames(df_metab_tmp4) = colnames(df_metab)
+  rownames(df_metab_tmp4) = rownames(df_metab)
   
   
-  df_metab = df_metab_tmp3[sort(commonIDs, decreasing = FALSE),]
+  df_metab = df_metab_tmp4[sort(commonIDs, decreasing = FALSE),]
   df_metax = df_metax[sort(commonIDs, decreasing = FALSE),]
   
   # making sure no NaN are present
