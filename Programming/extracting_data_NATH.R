@@ -157,6 +157,8 @@ extracting_data_NATH <- function(whichWeek="null", whichTaxLevel="species", cutO
   ### OBS COMMENT: Maybe we need to normalize per median ###
   df_metab_tmp4 = as.data.frame(apply(df_metab,MARGIN = 2, function(x){x/max(x)}))
   
+  # normalizing per median
+  
   colnames(df_metab_tmp4) = colnames(df_metab)
   rownames(df_metab_tmp4) = rownames(df_metab)
   
