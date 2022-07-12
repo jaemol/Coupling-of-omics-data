@@ -7,7 +7,8 @@ library(stringr)
 library(gsubfn)
 
 # beginning function
-extracting_data_NATH <- function(whichWeek="null", whichTaxLevel="species", cutOffMetabMass) {
+extracting_data_NATH <- function(whichWeek="null", whichTaxLevel="species", 
+                                 cutOffMetabMass, whichNormalization) {
   # loading data
   #data_phys_original  <- readRDS("Data/allDataMetataxonomicNCLTEE.rds")
   load("Data/ps.asv.reduced.wTree.RData")
@@ -152,13 +153,23 @@ extracting_data_NATH <- function(whichWeek="null", whichTaxLevel="species", cutO
   df_metab = data_metab[metab_new_names %in% commonIDs,]
   df_metax = data_metax[sampleID.metatax %in% commonIDs,]
   
+  ## normalization of the metabolomic LCMS data
+  if (whichNormalization == "peak") {
+    # normalizing the metabolomic data, percentage-based according to max peak per feature
+    ### OBS COMMENT: Maybe we need to normalize per median ###
+    df_metab_tmp4 = as.data.frame(apply(df_metab,MARGIN = 2, function(x){x/max(x)})) 
+    
+  } else if (whichNormalization == "median") {
+    # normalizing per median (actually by MAD, median absolute deviation)
+    df_metab_tmp4 = as.data.frame(apply(df_metab, MARGIN = 2, function(x){x/(mad(x, center = median(x), na.rm = FALSE, constant = 1)+1)}))
+    #df_metab_tmp4 = as.data.frame(apply(df_metab, MARGIN = 2, function(x){x/(median(x)+1)}))
+    
+  } else {
+    print("No correct normalization were chosen, no normalization performed.\n Enter either: 'median' or 'peak'")
+  }
   
-  # normalizing the metabolomic data, percentage-based according to max peak per feature
-  ### OBS COMMENT: Maybe we need to normalize per median ###
-  df_metab_tmp4 = as.data.frame(apply(df_metab,MARGIN = 2, function(x){x/max(x)}))
   
-  # normalizing per median
-  
+  # giving the proper names to the data set
   colnames(df_metab_tmp4) = colnames(df_metab)
   rownames(df_metab_tmp4) = rownames(df_metab)
   
