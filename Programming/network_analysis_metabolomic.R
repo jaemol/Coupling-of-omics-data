@@ -38,7 +38,7 @@ chosenDataSet     = "metab"       # "metab" or "genom"
 chosenTaxonomy    <- "species"    # "species" or "genus"   
 chosenWeek        <- "null"       # "1", "4", or "10"
 chosenCutoffMass  <- 200          # arbitrary value, removing based on column name
-inData <- extracting_data_NATH(whichWeek=chosenWeek, whichTaxLevel=chosenTaxonomy, cutOffMetabMass = chosenCutoffMass)
+inData <- extracting_data_NATH(whichWeek=chosenWeek, whichTaxLevel=chosenTaxonomy, cutOffMetabMass=chosenCutoffMass)
 
 # filtering data
 inData <- data_filtering(data=inData, whichDataSet=chosenDataSet, whichWeek=chosenWeek)
