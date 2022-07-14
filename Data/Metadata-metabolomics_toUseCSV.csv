@@ -1,0 +1,51 @@
+﻿Sample no. (MCCe);Species 1;Species 1 Code;Species 2; Species 2 Code ;Additional names;Time;System;Bio.Rep
+449;None;None;None;None;Medium control;;;
+450;T. suecica community ;None;P. inhibens DSM17395 Δbtda;MMCe00071;TS-D1-T1;7;NoTDA;1
+451;T. suecica community ;None;P. inhibens DSM17395 Δbtda;MMCe00071;TS-D2-T1;7;NoTDA;2
+452;T. suecica community ;None;P. inhibens DSM17395 Δbtda;MMCe00071;TS-D3-T1;7;NoTDA;3
+453;T. suecica community ;None;P. inhibens DSM17395 Δbtda;MMCe00071;TS-D4-T1;7;NoTDA;4
+454;T. suecica community ;None;P. inhibens DSM17395;MMCe00070;TS-P1-T1;7;TDA;1
+455;T. suecica community ;None;P. inhibens DSM17395;MMCe00070;TS-P2-T1;7;TDA;2
+456;T. suecica community ;None;P. inhibens DSM17395;MMCe00070;TS-P3-T1;7;TDA;3
+457;T. suecica community ;None;P. inhibens DSM17395;MMCe00070;TS-P4-T1;7;TDA;4
+458;None;None;None;None;Medium control;;;
+459;T. suecica community ;None;P. inhibens DSM17395 Δbtda;MMCe00071;TS-D1-T4;28;NoTDA;1
+460;T. suecica community ;None;P. inhibens DSM17395 Δbtda;MMCe00071;TS-D2-T4;28;NoTDA;2
+461;T. suecica community ;None;P. inhibens DSM17395 Δbtda;MMCe00071;TS-D3-T4;28;NoTDA;3
+462;T. suecica community ;None;P. inhibens DSM17395 Δbtda;MMCe00071;TS-D4-T4;28;NoTDA;4
+463;T. suecica community ;None;P. inhibens DSM17395;MMCe00070;TS-P1-T4;28;TDA;1
+464;T. suecica community ;None;P. inhibens DSM17395;MMCe00070;TS-P2-T4;28;TDA;2
+465;T. suecica community ;None;P. inhibens DSM17395;MMCe00070;TS-P3-T4;28;TDA;3
+466;T. suecica community ;None;P. inhibens DSM17395;MMCe00070;TS-P4-T4;28;TDA;4
+467;T. suecica community ;None;P. inhibens DSM17395 Δbtda;MMCe00071;TS-D1-T10;70;NoTDA;1
+468;T. suecica community ;None;P. inhibens DSM17395 Δbtda;MMCe00071;TS-D2-T10;70;NoTDA;2
+469;T. suecica community ;None;P. inhibens DSM17395 Δbtda;MMCe00071;TS-D3-T10;70;NoTDA;3
+470;T. suecica community ;None;P. inhibens DSM17395 Δbtda;MMCe00071;TS-D4-T10;70;NoTDA;4
+471;T. suecica community ;None;P. inhibens DSM17395;MMCe00070;TS-P1-T10;70;TDA;1
+472;T. suecica community ;None;P. inhibens DSM17395;MMCe00070;TS-P2-T10;70;TDA;2
+473;T. suecica community ;None;P. inhibens DSM17395;MMCe00070;TS-P3-T10;70;TDA;3
+474;T. suecica community ;None;P. inhibens DSM17395;MMCe00070;TS-P4-T10;70;TDA;4
+0481;T. suecica community ;None;None;None;TS-C1-T1;7;Control;1
+0482;T. suecica community ;None;None;None;TS-C2-T1;7;Control;2
+0483;T. suecica community ;None;None;None;TS-C3-T1;7;Control;3
+0484;T. suecica community ;None;None;None;TS-C4-T1;7;Control;4
+0485;T. suecica community ;None;None;None;TS-C1-T4;28;Control;1
+0486;T. suecica community ;None;None;None;TS-C2-T4;28;Control;2
+0487;T. suecica community ;None;None;None;TS-C3-T4;28;Control;3
+0488;T. suecica community ;None;None;None;TS-C4-T4;28;Control;4
+0489;T. suecica community ;None;None;None;TS-C1-T10;70;Control;1
+0490;T. suecica community ;None;None;None;TS-C2-T10;70;Control;2
+0491;T. suecica community ;None;None;None;TS-C3-T10;70;Control;3
+0492;T. suecica community ;None;None;None;TS-C4-T10;70;Control;4
+0493;T. suecica community ;None;P. inhibens DSM17395;MMCe00070;TS-P1-T6;42;TDA;1
+0494;T. suecica community ;None;P. inhibens DSM17395;MMCe00070;TS-P2-T6;42;TDA;2
+0495;T. suecica community ;None;P. inhibens DSM17395;MMCe00070;TS-P3-T6;42;TDA;3
+0496;T. suecica community ;None;P. inhibens DSM17395;MMCe00070;TS-P4-T6;42;TDA;4
+0497;T. suecica community ;None;P. inhibens DSM17395 Δbtda;MMCe00071;TS-D1-T6;42;NoTDA;1
+0498;T. suecica community ;None;P. inhibens DSM17395 Δbtda;MMCe00071;TS-D2-T6;42;NoTDA;2
+0499;T. suecica community ;None;P. inhibens DSM17395 Δbtda;MMCe00071;TS-D3-T6;42;NoTDA;3
+0500;T. suecica community ;None;P. inhibens DSM17395 Δbtda;MMCe00071;TS-D4-T6;42;NoTDA;4
+0501;T. suecica community ;None;None;None;TS-C1-T6;42;Control;1
+0502;T. suecica community ;None;None;None;TS-C2-T6;42;Control;2
+0503;T. suecica community ;None;None;None;TS-C3-T6;42;Control;3
+0504;T. suecica community ;None;None;None;TS-C4-T6;42;Control;4
