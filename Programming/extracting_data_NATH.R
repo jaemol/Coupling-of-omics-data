@@ -8,7 +8,7 @@ library(gsubfn)
 
 # beginning function
 extracting_data_NATH <- function(whichWeek="null", whichTaxLevel="species", 
-                                 cutOffMetabMass, whichNormalization) {
+                                 cutOffMetabMass=200, whichNormalization) {
   # loading data
   #data_phys_original  <- readRDS("Data/allDataMetataxonomicNCLTEE.rds")
   load("Data/ps.asv.reduced.wTree.RData")
