@@ -83,25 +83,31 @@ extracting_data_NATH <- function(whichWeek="null", whichTaxLevel="species",
   
   
   # loading in data
-  df_metab_original <- read.csv("Data/metabolomic_day7,28,70.csv", header = TRUE, 
-                                sep = ";", stringsAsFactors = FALSE, strip.white = TRUE)
+  # df_metab_original <- read.csv("Data/metabolomic_day7,28,70.csv", header = TRUE, 
+  #                               sep = ";", stringsAsFactors = FALSE, strip.white = TRUE)
+  # 
+  # df_metab_numOnly = read.csv("Data/metabolomic_day7,28,70_NumOnly.csv", header = FALSE,
+  #                             sep = ";", stringsAsFactors = FALSE, strip.white = TRUE, fill = TRUE)
   
-  df_metab_numOnly = read.csv("Data/metabolomic_day7,28,70_NumOnly.csv", header = FALSE,
+  df_metab_original <- read.csv("Data/Nath_algal_community_MZmine_12072022_legacy export.csv", header = TRUE,
+                                sep = ";", stringsAsFactors = FALSE, strip.white = TRUE) 
+  
+  df_metab_numOnly = read.csv("Data/Nath_algal_community_MZmine_12072022_legacy export_numOnly.csv", header = FALSE,
                               sep = ";", stringsAsFactors = FALSE, strip.white = TRUE, fill = TRUE)
-  
+
   # naming columns and rows
   colnames(df_metab_numOnly) = colnames(df_metab_original)[-1]
-  rownames(df_metab_numOnly) = df_metab_original[,1][-1]
+  rownames(df_metab_numOnly) = df_metab_original[,1]
   
   # transposing the data frame
   df_metab_tmp1 = as.data.frame(t(df_metab_numOnly))
   
   # loading in metadata metabolomics sheet - changed data to .csv first, to make it work
-  metadata_metabolomics  <- read.csv("Data/Metadata-metabolomics.csv", fill = TRUE, header = TRUE, sep = ";")
+  metadata_metabolomics  <- read.csv("Data/Metadata-metabolomics_toUseCSV.csv", fill = TRUE, header = TRUE, sep = ";")
   
   # fetching two first rows / names
   rownam_samples_metab  <- rownames(df_metab_tmp1)
-  addit_info_samples    <- df_metab_original[,1]
+  #addit_info_samples    <- df_metab_original[,1]
   
   # running through the names, matching them with phyloseq naming
   metab_new_names <- rownam_samples_metab
@@ -110,12 +116,19 @@ extracting_data_NATH <- function(whichWeek="null", whichTaxLevel="species",
     
     num_grep = as.numeric(unlist(regmatches(rownam_samples_metab[i], gregexpr("[[:digit:]]+", rownam_samples_metab[i]))))
       
-    if (length(num_grep) == 1 && num_grep > 400) { 
-      # find which sample is talked about
-      metaDataRow = which(metadata_metabolomics$ï..Sample.no...MCCe. == num_grep)
+    #if (length(num_grep) == 1 && num_grep > 400) { 
+    # find which sample is talked about
+    metaDataRow = which(metadata_metabolomics$ï..Sample.no...MCCe. == num_grep)
+    
+    # ensuring no medium control (blank samples)
+    if (!(num_grep==449||num_grep==458)){
       
-      # checking for TDA
-      if(metadata_metabolomics$System[metaDataRow]=="TDA"){tdaBin="P"}else{tdaBin="D"}
+      # checking for TDA or control
+      if(metadata_metabolomics$System[metaDataRow]=="TDA"){
+        tdaBin="P"
+      } else if (metadata_metabolomics$System[metaDataRow]=="NoTDA"){
+        tdaBin="D"
+      } else {tdaBin="C"}
       
       # finding biorep
       biorepSample  = metadata_metabolomics$Bio.Rep[metaDataRow]
@@ -129,11 +142,17 @@ extracting_data_NATH <- function(whichWeek="null", whichTaxLevel="species",
     } 
   }
   
+  # removing samples with NA
+  #whichNaNRemove  <- which(gsub("MCCe", x = metab_new_names, replacement = "", perl = TRUE)==TRUE)
+  whichNaNRemove  <- c(1,10)
+  metab_new_names <- metab_new_names[-whichNaNRemove]
+  df_metab_tmp2   <- df_metab_tmp1[-whichNaNRemove,]
+  
   # inserting the correct names
-  rownames(df_metab_tmp1) = metab_new_names
+  rownames(df_metab_tmp2) = metab_new_names
   
   # removing the additional column with information (1)
-  df_metab_tmp2 = df_metab_tmp1[,-c(1)]
+  #df_metab_tmp2 = df_metab_tmp1[,-c(1)]
   
   # finding the common test IDs, to make a full dataset
   commonIDs <- intersect(sampleID.metatax, metab_new_names)
