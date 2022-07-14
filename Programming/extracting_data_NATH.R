@@ -11,7 +11,7 @@ extracting_data_NATH <- function(whichWeek="null", whichTaxLevel="species",
                                  cutOffMetabMass=200, whichNormalization) {
   # loading data
   #data_phys_original  <- readRDS("Data/allDataMetataxonomicNCLTEE.rds")
-  load("Data/ps.asv.reduced.wTree.RData")
+  load("Data/allData_16S_NCLTEE_Reduced.RData")
   data_phys_original <- ps.new
   
   # The actual data
@@ -83,8 +83,11 @@ extracting_data_NATH <- function(whichWeek="null", whichTaxLevel="species",
   
   
   # loading in data
-  # df_metab_original <- read.csv("Data/metabolomic_day7,28,70.csv", header = TRUE, 
-  #                               sep = ";", stringsAsFactors = FALSE, strip.white = TRUE)
+  # df_metab_original <- read.csv("Data/metabolomic_day7,28,70.csv", header = F, 
+  #                                sep = ";", stringsAsFactors = FALSE, strip.white = TRUE, skip = 2)
+  # 
+  # colnames(df_metab_original)=read.csv("Data/metabolomic_day7,28,70.csv", header = F, 
+  #          sep = ";", stringsAsFactors = FALSE, strip.white = TRUE, nrows = 2)[1,]
   # 
   # df_metab_numOnly = read.csv("Data/metabolomic_day7,28,70_NumOnly.csv", header = FALSE,
   #                             sep = ";", stringsAsFactors = FALSE, strip.white = TRUE, fill = TRUE)
@@ -92,6 +95,7 @@ extracting_data_NATH <- function(whichWeek="null", whichTaxLevel="species",
   df_metab_original <- read.csv("Data/Nath_algal_community_MZmine_12072022_legacy export.csv", header = TRUE,
                                 sep = ";", stringsAsFactors = FALSE, strip.white = TRUE) 
   
+  str(df_metab_original)
   df_metab_numOnly = read.csv("Data/Nath_algal_community_MZmine_12072022_legacy export_numOnly.csv", header = FALSE,
                               sep = ";", stringsAsFactors = FALSE, strip.white = TRUE, fill = TRUE)
 
