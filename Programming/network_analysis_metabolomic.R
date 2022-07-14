@@ -34,11 +34,13 @@ source("Programming/extracting_data_NATH.R")
 source("Programming/data_filtering.R")
 
 # loading data
-chosenDataSet     = "metab"       # "metab" or "genom"
-chosenTaxonomy    <- "species"    # "species" or "genus"   
-chosenWeek        <- "null"       # "1", "4", or "10"
-chosenCutoffMass  <- 200          # arbitrary value, removing based on column name
-inData <- extracting_data_NATH(whichWeek=chosenWeek, whichTaxLevel=chosenTaxonomy, cutOffMetabMass=chosenCutoffMass)
+chosenDataSet       = "metab"       # "metab" or "genom"
+chosenTaxonomy      <- "species"    # "species" or "genus"   
+chosenWeek          <- "null"       # "1", "4", or "10"
+chosenCutoffMass    <- 200          # arbitrary value, removing based on column name
+chosenNormalization <- "peak"
+inData <- extracting_data_NATH(whichWeek=chosenWeek, whichTaxLevel=chosenTaxonomy, 
+                               cutOffMetabMass=chosenCutoffMass, whichNormalization=chosenNormalization)
 
 # filtering data
 inData <- data_filtering(data=inData, whichDataSet=chosenDataSet, whichWeek=chosenWeek)
