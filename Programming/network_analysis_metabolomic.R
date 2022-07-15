@@ -38,8 +38,8 @@ source("Programming/data_analyze.R")
 chosenDataSet       = "metab"       # "metab" or "genom"
 chosenTaxonomy      <- "species"    # "species" or "genus"   
 chosenWeek          <- "null"       # "1", "4", or "10"
-chosenCutoffMass    <- 400          # arbitrary value, removing based on column name
-chosenNormalization <- "peak"
+chosenCutoffMass    <- 300          # arbitrary value, removing based on column name
+chosenNormalization <- "mad"        # can either be 'mad', 'median' or 'peak'
 inData <- extracting_data_NATH(whichWeek=chosenWeek, whichTaxLevel=chosenTaxonomy, 
                                cutOffMetabMass=chosenCutoffMass, whichNormalization=chosenNormalization)
 
@@ -147,7 +147,7 @@ data_control  <- data[substr(rownames(data), 1, 1) == "C",]
 
 # Network construction
 net_TDA <- netConstruct(data = data_noTDA, 
-                        data2 = data_TDA,  
+                        data2 = data_control,  
                         filtTax = "highestVar",
                         filtTaxPar = list(highestVar = 50),
                         measure = "spearman", thresh = 0.65,
@@ -177,7 +177,7 @@ props_TDA <- netAnalyze(net_TDA,
 summary(props_TDA)
 
 # for saving the plot as an image
-# png(filename = "TDA_Vs_NoTDA_FullSet.png",
+# png(filename = "noTDA_Vs_Control_thres65_mad.png",
 #     width = 4000, height = 3000,units = "px", pointsize = 12,
 #     bg = "white", res = 300, family = "", restoreConsole = TRUE,
 #     type = c("windows", "cairo", "cairo-png"),
@@ -193,9 +193,9 @@ plot(props_TDA,
      cexLabels = 1.3,
      cexHubLabels = 1,
      cexTitle = 3.7,
-     groupNames = c("No TDA", "TDA"),
+     groupNames = c("No TDA", "Control"),
      hubBorderCol  = "gray40")
-# dev.off() # shutting off image saving
+#dev.off() # shutting off image saving
 
 legend("bottomleft", title = "estimated association:", legend = c("+","-"), 
        col = c("#009900","red"), inset = 0.02, cex = 2, lty = 1, lwd = 4, 
@@ -313,4 +313,4 @@ summary(comp_weekly_TDA,
 #####
 # trying data_analyze
 # henriciella + 770.4851152
-data_analyze(data = inData, feature1 = "Henriciella", feature2 = "770.4851152")
+data_analyze(data = inData, feature1 = "Sulfitobacter", feature2 = "415.1571781")
