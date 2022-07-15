@@ -32,13 +32,14 @@ library(NetCoMi)
 # loading functions
 source("Programming/extracting_data_NATH.R")
 source("Programming/data_filtering.R")
+source("Programming/data_analyze.R")
 
 # loading data
 chosenDataSet       = "metab"       # "metab" or "genom"
 chosenTaxonomy      <- "species"    # "species" or "genus"   
 chosenWeek          <- "null"       # "1", "4", or "10"
-chosenCutoffMass    <- 200          # arbitrary value, removing based on column name
-chosenNormalization <- "median"
+chosenCutoffMass    <- 400          # arbitrary value, removing based on column name
+chosenNormalization <- "peak"
 inData <- extracting_data_NATH(whichWeek=chosenWeek, whichTaxLevel=chosenTaxonomy, 
                                cutOffMetabMass=chosenCutoffMass, whichNormalization=chosenNormalization)
 
@@ -64,13 +65,11 @@ if (choiceOfWeekHere != "null") {
 
 
 
-dataOneColumns <- grep(x = colnames(data), pattern = "DATA.*")
-
-
-colVector <- 1:length(colnames(data))
-for (i in 1:length(colVector)) {
-  if (i<=max(dataOneColumns)) {colVector[i] = "green"} else {colVector[i] = "red"}
-}
+#dataOneColumns <- grep(x = colnames(data), pattern = "DATA.*")
+# colVector <- 1:length(colnames(data))
+# for (i in 1:length(colVector)) {
+#   if (i<=max(dataOneColumns)) {colVector[i] = "green"} else {colVector[i] = "red"}
+# }
 
 
 if (chosenTaxonomy=="genus"){
@@ -309,3 +308,9 @@ summary(comp_weekly_TDA,
         showCentr = c("degree", "between", "closeness"), 
         #showCentr = c("eigenvector"),
         numbNodes = 5)
+
+
+#####
+# trying data_analyze
+# henriciella + 770.4851152
+data_analyze(data = inData, feature1 = "Henriciella", feature2 = "770.4851152")
