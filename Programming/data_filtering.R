@@ -8,7 +8,7 @@ library(gsubfn)
 
 options(warn = 0) # set=2 to end loops when warnings occur
 
-data_filtering <- function(data, whichDataSet, whichWeek) {
+data_filtering <- function(data, whichDataSet, whichWeek, cutOffOrAuto="auto") {
   # whichDataSet can either be 'metab' or 'genom'
   if (whichDataSet == "metab") {
     inData = data
@@ -52,7 +52,7 @@ data_filtering <- function(data, whichDataSet, whichWeek) {
   
   
   
-  if (!(whichDataSet == "metab" && whichWeek != "null"))
+  if (cutOffOrAuto == "auto")
     {
       # fitting Michaelis-Menten function to data
       print("Fitting Michaelis-Menten function...")
@@ -120,6 +120,13 @@ data_filtering <- function(data, whichDataSet, whichWeek) {
       
       # dropping columns by index
       sprintf("Filtering out data with zero-ratio above %f...", threshold_ratio)
+      inData = inData[, keepIn]
+      rm(keepIn) # to save memory
+  } else {
+      # if the ratioData is above the chosen cutoff, it is to be removed
+      keepIn <- which(ratioData <= cutOffOrAuto)
+      # dropping columns by index
+      sprintf("Filtering out data with zero-ratio above %f...", cutOffOrAuto)
       inData = inData[, keepIn]
       rm(keepIn) # to save memory
     }
