@@ -83,35 +83,25 @@ extracting_data_NATH <- function(whichWeek="null", whichTaxLevel="species",
   
   
   # loading in data
-  # df_metab_original <- read.csv("Data/metabolomic_day7,28,70.csv", header = F, 
-  #                                sep = ";", stringsAsFactors = FALSE, strip.white = TRUE, skip = 2)
-  # 
-  # colnames(df_metab_original)=read.csv("Data/metabolomic_day7,28,70.csv", header = F, 
-  #          sep = ";", stringsAsFactors = FALSE, strip.white = TRUE, nrows = 2)[1,]
-  # 
-  # df_metab_numOnly = read.csv("Data/metabolomic_day7,28,70_NumOnly.csv", header = FALSE,
-  #                             sep = ";", stringsAsFactors = FALSE, strip.white = TRUE, fill = TRUE)
+  df_metab_original <- read.csv("Data/allData_LCMS_metabolomics.csv", header = FALSE,
+                                sep = ";", stringsAsFactors = FALSE, strip.white = TRUE, skip = 1)
   
-  df_metab_original <- read.csv("Data/Nath_algal_community_MZmine_12072022_legacy export.csv", header = TRUE,
-                                sep = ";", stringsAsFactors = FALSE, strip.white = TRUE) 
+  colnames(df_metab_original) = read.csv("Data/allData_LCMS_metabolomics.csv", header = F,
+                                         sep = ";", stringsAsFactors = FALSE, strip.white = TRUE, nrows = 1)
+  rownames(df_metab_original) = read.csv("Data/allData_LCMS_metabolomics.csv", header = F,
+                                         sep = ";", stringsAsFactors = FALSE, strip.white = TRUE)[-1,1]
   
-  str(df_metab_original)
-  df_metab_numOnly = read.csv("Data/Nath_algal_community_MZmine_12072022_legacy export_numOnly.csv", header = FALSE,
-                              sep = ";", stringsAsFactors = FALSE, strip.white = TRUE, fill = TRUE)
-
-  # naming columns and rows
-  colnames(df_metab_numOnly) = colnames(df_metab_original)[-1]
-  rownames(df_metab_numOnly) = df_metab_original[,1]
+  # removing first column (masses)
+  df_metab_original = df_metab_original[,-1]
   
   # transposing the data frame
-  df_metab_tmp1 = as.data.frame(t(df_metab_numOnly))
+  df_metab_tmp1 = as.data.frame(t(df_metab_original))
   
   # loading in metadata metabolomics sheet - changed data to .csv first, to make it work
-  metadata_metabolomics  <- read.csv("Data/Metadata-metabolomics_toUseCSV.csv", fill = TRUE, header = TRUE, sep = ";")
+  metadata_metabolomics  <- read.csv("Data/Metadata-metabolomics.csv", fill = TRUE, header = TRUE, sep = ";")
   
-  # fetching two first rows / names
+  # fetching first row
   rownam_samples_metab  <- rownames(df_metab_tmp1)
-  #addit_info_samples    <- df_metab_original[,1]
   
   # running through the names, matching them with phyloseq naming
   metab_new_names <- rownam_samples_metab
@@ -125,7 +115,7 @@ extracting_data_NATH <- function(whichWeek="null", whichTaxLevel="species",
     metaDataRow = which(metadata_metabolomics$ï..Sample.no...MCCe. == num_grep)
     
     # ensuring no medium control (blank samples)
-    if (!(num_grep==449||num_grep==458)){
+    #if (!(num_grep==449||num_grep==458)){
       
       # checking for TDA or control
       if(metadata_metabolomics$System[metaDataRow]=="TDA"){
@@ -143,7 +133,7 @@ extracting_data_NATH <- function(whichWeek="null", whichTaxLevel="species",
       # inserting into new name format
       metab_new_names[i] = paste(tdaBin,biorepSample,timeSample, sep = "-")
       
-    } 
+    #} 
   }
   
   # removing samples with NA
@@ -184,8 +174,8 @@ extracting_data_NATH <- function(whichWeek="null", whichTaxLevel="species",
     
   } else if (whichNormalization == "median") {
     # normalizing per median (actually by MAD, median absolute deviation)
-    df_metab_tmp4 = as.data.frame(apply(df_metab, MARGIN = 2, function(x){x/(mad(x, center = median(x), na.rm = FALSE, constant = 1)+1)}))
-    #df_metab_tmp4 = as.data.frame(apply(df_metab, MARGIN = 2, function(x){x/(median(x)+1)}))
+    #df_metab_tmp4 = as.data.frame(apply(df_metab, MARGIN = 2, function(x){x/(mad(x, center = median(x), na.rm = FALSE, constant = 1)+1)}))
+    df_metab_tmp4 = as.data.frame(apply(df_metab, MARGIN = 2, function(x){x/(median(x)+1)}))
     
   } else {
     print("No correct normalization were chosen, no normalization performed.\n Enter either: 'median' or 'peak'")
