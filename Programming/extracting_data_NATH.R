@@ -173,12 +173,15 @@ extracting_data_NATH <- function(whichWeek="null", whichTaxLevel="species",
     df_metab_tmp4 = as.data.frame(apply(df_metab,MARGIN = 2, function(x){x/max(x)})) 
     
   } else if (whichNormalization == "median") {
-    # normalizing per median (actually by MAD, median absolute deviation)
-    #df_metab_tmp4 = as.data.frame(apply(df_metab, MARGIN = 2, function(x){x/(mad(x, center = median(x), na.rm = FALSE, constant = 1)+1)}))
+    # normalizing per median
     df_metab_tmp4 = as.data.frame(apply(df_metab, MARGIN = 2, function(x){x/(median(x)+1)}))
     
+  } else if (whichNormalization == "mad") {
+    # normalizing per mad (median absolute deviation)
+    df_metab_tmp4 = as.data.frame(apply(df_metab, MARGIN = 2, function(x){x/(mad(x, center = median(x), na.rm = FALSE, constant = 1)+1)}))
+  
   } else {
-    print("No correct normalization were chosen, no normalization performed.\n Enter either: 'median' or 'peak'")
+    print("No correct normalization were chosen, no normalization performed.\n Enter either: 'median', 'mad' or 'peak'")
   }
   
   
