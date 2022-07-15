@@ -38,7 +38,7 @@ chosenDataSet       = "metab"       # "metab" or "genom"
 chosenTaxonomy      <- "species"    # "species" or "genus"   
 chosenWeek          <- "null"       # "1", "4", or "10"
 chosenCutoffMass    <- 200          # arbitrary value, removing based on column name
-chosenNormalization <- "peak"
+chosenNormalization <- "median"
 inData <- extracting_data_NATH(whichWeek=chosenWeek, whichTaxLevel=chosenTaxonomy, 
                                cutOffMetabMass=chosenCutoffMass, whichNormalization=chosenNormalization)
 
