@@ -43,14 +43,12 @@ inData <- extracting_data_NATH(whichWeek=chosenWeek, whichTaxLevel=chosenTaxonom
                                cutOffMetabMass=chosenCutoffMass, whichNormalization=chosenNormalization)
 
 # filtering data
-inData <- data_filtering(data=inData, whichDataSet=chosenDataSet, whichWeek=chosenWeek)
-
-# inData_week1 <- data_filtering(data = extracting_data_NATH(whichWeek = "1"), whichDataSet = "metab", whichWeek = 1)
-
+chosenCutoffFiltering <- 0.9
+inData <- data_filtering(data=inData, whichDataSet=chosenDataSet, whichWeek=chosenWeek, cutOffOrAuto=chosenCutoffFiltering)
 
 ### for choosing the different days, with the maximum filtering of the full data set
 
-# can only select week number 1, 4, or 10
+# can only select week number 1, 4, 6, or 10
 choiceOfWeekHere <- "null"
 if (choiceOfWeekHere != "null") {
   data = inData[gsub(".+-(?=\\d+$)", "", rownames(inData), perl = TRUE)==choiceOfWeekHere,]  
@@ -61,6 +59,7 @@ if (choiceOfWeekHere != "null") {
 # or if wanted, make your own data here: 
 # data_week1  = inData[gsub(".+-(?=\\d+$)", "", rownames(inData), perl = TRUE)=="1",]
 # data_week4  = inData[gsub(".+-(?=\\d+$)", "", rownames(inData), perl = TRUE)=="4",]
+# data_week6  = inData[gsub(".+-(?=\\d+$)", "", rownames(inData), perl = TRUE)=="6",]
 # data_week10 = inData[gsub(".+-(?=\\d+$)", "", rownames(inData), perl = TRUE)=="10",]
 
 
@@ -138,24 +137,14 @@ legend(x=0.85,y=0.6,legend=c("Metataxonomic","Metabolomic"),
 
 
 
-###
-
-cor(log1p(data$Jannaschia[-13]),log1p(data$`943.99194`[-13]),method = "pear" )^2
-plot(log1p(data$Jannaschia[-13]),log1p(data$`943.99194`[-13]))
-LM=lm(log1p(data$Jannaschia[-13])~log1p(data$`943.99194`[-13]))
-summary(LM)
-plot(LM)
-###
-
-#cor(inData$TolC1, inData$Escherichia.Shigella, method = "spear")
-
 
 
 ############################ 
 # compare two networks differentiated upon presence of TDA or not
-# splitting the data set of all weeks into two; TDA and noTDA
-data_TDA    <- data[substr(rownames(data), 1, 1) == "D",]
-data_noTDA  <- data[substr(rownames(data), 1, 1) == "P",]
+# splitting the data set of all weeks into three; TDA, noTDA and control
+data_TDA      <- data[substr(rownames(data), 1, 1) == "D",]
+data_noTDA    <- data[substr(rownames(data), 1, 1) == "P",]
+data_control  <- data[substr(rownames(data), 1, 1) == "C",]
 
 # Network construction
 net_TDA <- netConstruct(data = data_noTDA, 
