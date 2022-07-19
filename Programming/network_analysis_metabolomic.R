@@ -38,13 +38,13 @@ source("Programming/data_analyze.R")
 chosenDataSet       = "metab"       # "metab" or "genom"
 chosenTaxonomy      <- "species"    # "species" or "genus"   
 chosenWeek          <- "null"       # "1", "4", or "10"
-chosenCutoffMass    <- 300          # arbitrary value, removing based on column name
+chosenCutoffMass    <- 200          # arbitrary value, removing based on column name
 chosenNormalization <- "mad"        # can either be 'mad', 'median' or 'peak'
 inData <- extracting_data_NATH(whichWeek=chosenWeek, whichTaxLevel=chosenTaxonomy, 
                                cutOffMetabMass=chosenCutoffMass, whichNormalization=chosenNormalization)
 
 # filtering data
-chosenCutoffFiltering <- 0.9
+chosenCutoffFiltering <- 0.85
 inData <- data_filtering(data=inData, whichDataSet=chosenDataSet, whichWeek=chosenWeek, cutOffOrAuto=chosenCutoffFiltering)
 
 ### for choosing the different days, with the maximum filtering of the full data set
@@ -150,7 +150,7 @@ net_TDA <- netConstruct(data = data_noTDA,
                         data2 = data_control,  
                         filtTax = "highestVar",
                         filtTaxPar = list(highestVar = 50),
-                        measure = "spearman", thresh = 0.65,
+                        measure = "spearman", thresh = 0.5,
                         measurePar = list(nlambda=10, 
                                          rep.num=10),
                         normMethod = "none", 
