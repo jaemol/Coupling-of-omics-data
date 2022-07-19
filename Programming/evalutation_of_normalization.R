@@ -34,5 +34,6 @@ here <- as.dist(dist_median)
 
 # adonis(Y ~ NO3, data=dat, strata=dat$field, perm=999)
 adonis2(data_peak ~ strata_field, strata = strata_field, permutations = 999, by = NULL, method = "euclidean")
-adonis2(data_median ~ strata_field, strata = NULL, permutations = 999, by = NULL)
+ad_median <- adonis(data_median ~ strata_field, strata = strata_field, permutations = 999, by = NULL)
 adonis2(data_mad ~ strata_field, strata = strata_field, permutations = 999, by = NULL)
+adonis2(data_mad ~ strata_field, strata = NULL, permutations = 999, by = NULL)
