@@ -109,6 +109,10 @@ getMetabDataNormEval=function(cutOffMetabMass=200, whichNormalization){
     # normalizing per median
     data_metab = as.data.frame(apply(df_metab_tmp3, MARGIN = 2, function(x){x/(median(x)+1)}))
     
+  } else if (whichNormalization == "mean") {
+    # normalizing per mean
+    data_metab = as.data.frame(apply(df_metab_tmp3, MARGIN = 2, function(x){x/(mean(x)+1)}))
+    
   } else if (whichNormalization == "mad") {
     # normalizing per mad (median absolute deviation)
     data_metab = as.data.frame(apply(df_metab_tmp3, MARGIN = 2, function(x){x/(mad(x, center = median(x), na.rm = FALSE, constant = 1)+1)}))
