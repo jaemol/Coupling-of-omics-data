@@ -83,56 +83,56 @@ if (chosenTaxonomy=="genus"){
 
 ############################ 
 # building single network with spearman as association measure - Full dataset, both treated and untreated
-net_single_fullSet <- netConstruct((data),
-                                   #filtTax = "highestFreq",
-                                   #filtTaxPar = list(highestFreq = 100),
-                                   #filtSamp = "totalReads",
-                                   #filtSampPar = list(totalReads = 1000),
-                                   measure = "spearman",thresh = 0.65,
-                                   measurePar = list(nlambda=10, 
-                                                     rep.num=10),
-                                   normMethod = "none", 
-                                   zeroMethod = "none",
-                                   sparsMethod = "threshold", 
-                                   dissFunc = "signed",
-                                   verbose = 3,weighted = T,
-                                   seed = 123456)
-
-props_single_fullSet <- netAnalyze(net_single_fullSet, 
-                                   centrLCC = TRUE,
-                                   clustMethod = "cluster_fast_greedy",
-                                   hubPar = "eigenvector",
-                                   weightDeg = FALSE, normDeg = FALSE)
-
-#?summary.microNetProps
-summary(props_single_fullSet, numbNodes = 5L)
-
-
-plot(props_single_fullSet,
-     labelScale = F,
-     shortenLabels = "none",
-     #nodeFilter = "clustMin",
-     #nodeFilter = "highestBetween",
-     #nodeFilterPar = 50,
-     cexLabels = 1.3,
-     title1 = paste("Single network with Spearman\nWeek:", choiceOfWeekHere, "taxonomy:", chosenTaxonomy),
-     #title1 = "Single network with Spearman",
-     showTitle = T,
-     cexTitle = 1.7)
-#nodeColor = colVector)
-
-plot.microNetProps
-
-
-# adding legend
-#legend("topright", cex = 0.5, title = "estimated association:",
-#      legend = c("Metataxonomic","Genomic"), lty = 1, lwd = 1, col = c("green","red"), 
-#     bty = "n", horiz = TRUE)
-
-legend(x=0.85,y=0.9,legend=c("Positive","Negative"),
-       cex=0.6,col=c("green","red"),pch=c(".","."),lwd = c(3,3))
-legend(x=0.85,y=0.6,legend=c("Metataxonomic","Metabolomic"),
-       cex=0.6,col=c("green","red"),pch=c(16,16),lwd = c(3,3))
+# net_single_fullSet <- netConstruct((data),
+#                                    #filtTax = "highestFreq",
+#                                    #filtTaxPar = list(highestFreq = 100),
+#                                    #filtSamp = "totalReads",
+#                                    #filtSampPar = list(totalReads = 1000),
+#                                    measure = "spearman",thresh = 0.65,
+#                                    measurePar = list(nlambda=10, 
+#                                                      rep.num=10),
+#                                    normMethod = "none", 
+#                                    zeroMethod = "none",
+#                                    sparsMethod = "threshold", 
+#                                    dissFunc = "signed",
+#                                    verbose = 3,weighted = T,
+#                                    seed = 123456)
+# 
+# props_single_fullSet <- netAnalyze(net_single_fullSet, 
+#                                    centrLCC = TRUE,
+#                                    clustMethod = "cluster_fast_greedy",
+#                                    hubPar = "eigenvector",
+#                                    weightDeg = FALSE, normDeg = FALSE)
+# 
+# #?summary.microNetProps
+# summary(props_single_fullSet, numbNodes = 5L)
+# 
+# 
+# plot(props_single_fullSet,
+#      labelScale = F,
+#      shortenLabels = "none",
+#      #nodeFilter = "clustMin",
+#      #nodeFilter = "highestBetween",
+#      #nodeFilterPar = 50,
+#      cexLabels = 1.3,
+#      title1 = paste("Single network with Spearman\nWeek:", choiceOfWeekHere, "taxonomy:", chosenTaxonomy),
+#      #title1 = "Single network with Spearman",
+#      showTitle = T,
+#      cexTitle = 1.7)
+# #nodeColor = colVector)
+# 
+# plot.microNetProps
+# 
+# 
+# # adding legend
+# #legend("topright", cex = 0.5, title = "estimated association:",
+# #      legend = c("Metataxonomic","Genomic"), lty = 1, lwd = 1, col = c("green","red"), 
+# #     bty = "n", horiz = TRUE)
+# 
+# legend(x=0.85,y=0.9,legend=c("Positive","Negative"),
+#        cex=0.6,col=c("green","red"),pch=c(".","."),lwd = c(3,3))
+# legend(x=0.85,y=0.6,legend=c("Metataxonomic","Metabolomic"),
+#        cex=0.6,col=c("green","red"),pch=c(16,16),lwd = c(3,3))
 
 
 
@@ -145,12 +145,12 @@ data_TDA      <- data[substr(rownames(data), 1, 1) == "D",]
 data_noTDA    <- data[substr(rownames(data), 1, 1) == "P",]
 data_control  <- data[substr(rownames(data), 1, 1) == "C",]
 
-# Network construction
-net_TDA <- netConstruct(data = data_noTDA, 
+# Network construction - noTDAvsControl
+net_noTDA_control <- netConstruct(data = data_noTDA, 
                         data2 = data_control,  
                         filtTax = "highestVar",
                         filtTaxPar = list(highestVar = 50),
-                        measure = "spearman", thresh = 0.5,
+                        measure = "spearman", thresh = 0.4,
                         measurePar = list(nlambda=10, 
                                          rep.num=10),
                         normMethod = "none", 
@@ -160,30 +160,30 @@ net_TDA <- netConstruct(data = data_noTDA,
                         verbose = 3, weighted = T,
                         seed = 123456)
 
-props_TDA <- netAnalyze(net_TDA, 
+props_noTDA_control <- netAnalyze(net_noTDA_control, 
                         centrLCC = FALSE,
                         avDissIgnoreInf = TRUE,
                         sPathNorm = FALSE,
                         clustMethod = "cluster_fast_greedy",
                         #hubPar = c("degree", "between", "closeness"),
                         hubPar = "eigenvector",
-                        hubQuant = 0.9,
+                        hubQuant = 01.9,
                         lnormFit = TRUE,
                         normDeg = FALSE,
                         normBetw = FALSE,
                         normClose = FALSE,
                         normEigen = FALSE)
 
-summary(props_TDA)
+summary(props_noTDA_control)
 
 # for saving the plot as an image
-# png(filename = "noTDA_Vs_Control_thres65_mad.png",
+# png(filename = "noTDA_Vs_Control_thres40_mad.png",
 #     width = 4000, height = 3000,units = "px", pointsize = 12,
 #     bg = "white", res = 300, family = "", restoreConsole = TRUE,
 #     type = c("windows", "cairo", "cairo-png"),
 #     symbolfamily = "default")
 
-plot(props_TDA, 
+plot(props_noTDA_control, 
      sameLayout = TRUE, 
      nodeColor = "cluster",
      nodeSize = "mclr",
@@ -197,51 +197,25 @@ plot(props_TDA,
      hubBorderCol  = "gray40")
 #dev.off() # shutting off image saving
 
-legend("bottomleft", title = "estimated association:", legend = c("+","-"), 
-       col = c("#009900","red"), inset = 0.02, cex = 2, lty = 1, lwd = 4, 
-       bty = "n", horiz = TRUE)
+# legend("bottomleft", title = "estimated association:", legend = c("+","-"), 
+#        col = c("#009900","red"), inset = 0.02, cex = 2, lty = 1, lwd = 4, 
+#        bty = "n", horiz = TRUE)
 
 
-comp_TDA <- netCompare(props_TDA, permTest = FALSE, verbose = FALSE)
+comp_noTDA_control <- netCompare(props_noTDA_control, permTest = FALSE, verbose = FALSE)
 
-summary(comp_TDA, 
+summary(comp_noTDA_control, 
         groupNames = c("No TDA", "TDA"),
         showCentr = c("degree", "between", "closeness"), 
         #showCentr = c("eigenvector"),
         numbNodes = 5)
 
-############################ 
-# compare two networks differentiated upon presence of TDA or not
-# splitting the data set of the chosen week into two; TDA and noTDA
-
-
-# can only select week number 1, 4, or 10
-choiceOfWeekHere <- "1"
-if (choiceOfWeekHere != "null") {
-  data_weekly = inData[gsub(".+-(?=\\d+$)", "", rownames(inData), perl = TRUE)==choiceOfWeekHere,]  
-} else {
-  data_weekly = inData  
-}
-
-
-if (chosenTaxonomy=="genus"){
-  colnames(data_weekly)=gsub("DATA.Bacteria_[A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.](.*)","\\1",colnames(data_weekly))
-  colnames(data_weekly)=gsub("DATA.Archaea_[A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.](.*)","\\1",colnames(data_weekly))
-} else {
-  colnames(data_weekly)=gsub("DATA.Bacteria_[A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.](.*)[_.](.*)","\\1",colnames(data_weekly))
-  colnames(data_weekly)=gsub("DATA.Archaea_[A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.](.*)[_.](.*)","\\1",colnames(data_weekly))
-}
-
-
-data_weekly_TDA    <- data_weekly[substr(rownames(data_weekly), 1, 1) == "D",]
-data_weekly_noTDA  <- data_weekly[substr(rownames(data_weekly), 1, 1) == "P",]
-
-# Network construction
-net_weekly_TDA <- netConstruct(data = data_weekly_noTDA, 
-                        data2 = data_weekly_TDA,  
-                        #filtTax = "highestVar",
-                        #filtTaxPar = list(highestVar = 50),
-                        measure = "spearman", thresh = 0.8,
+# Network construction - TDAvsControl
+net_TDA_control <- netConstruct(data = data_TDA, 
+                        data2 = data_control,  
+                        filtTax = "highestVar",
+                        filtTaxPar = list(highestVar = 50),
+                        measure = "spearman", thresh = 0.4,
                         measurePar = list(nlambda=10, 
                                           rep.num=10),
                         normMethod = "none", 
@@ -251,7 +225,7 @@ net_weekly_TDA <- netConstruct(data = data_weekly_noTDA,
                         verbose = 3, weighted = T,
                         seed = 123456)
 
-props_weekly_TDA <- netAnalyze(net_weekly_TDA, 
+props_TDA_control <- netAnalyze(net_TDA_control, 
                         centrLCC = FALSE,
                         avDissIgnoreInf = TRUE,
                         sPathNorm = FALSE,
@@ -265,17 +239,16 @@ props_weekly_TDA <- netAnalyze(net_weekly_TDA,
                         normClose = FALSE,
                         normEigen = FALSE)
 
-#summary(props_weekly_TDA)
+summary(props_TDA_control)
 
-# using png to save plot
-# png(filename = paste("TDA_Vs_NoTDA_Week_",choiceOfWeekHere,".png"), 
+# for saving the plot as an image
+# png(filename = "TDA_Vs_Control_thres40_mad.png",
 #     width = 4000, height = 3000,units = "px", pointsize = 12,
 #     bg = "white", res = 300, family = "", restoreConsole = TRUE,
 #     type = c("windows", "cairo", "cairo-png"),
 #     symbolfamily = "default")
 
-
-plot(props_weekly_TDA, 
+plot(props_TDA_control, 
      sameLayout = TRUE, 
      nodeColor = "cluster",
      nodeSize = "mclr",
@@ -284,33 +257,94 @@ plot(props_weekly_TDA,
      cexNodes = 1.5, 
      cexLabels = 1.3,
      cexHubLabels = 1,
-     # showTitle = TRUE,
-     # title2 = paste("Week",choiceOfWeekHere),
-     #title(main = paste("Week",choiceOfWeekHere)),
-     #cexTitle = 3.7,
-     cexTitle = 2.5,
-     groupNames = c(paste("No TDA\nWeek:",choiceOfWeekHere), paste("TDA\nWeek:",choiceOfWeekHere)),
+     cexTitle = 3.7,
+     groupNames = c("TDA", "Control"),
      hubBorderCol  = "gray40")
-
-# using png() and dev.off to save the plot
-# dev.off()
-
+#dev.off() # shutting off image saving
 
 # legend("bottomleft", title = "estimated association:", legend = c("+","-"), 
 #        col = c("#009900","red"), inset = 0.02, cex = 2, lty = 1, lwd = 4, 
 #        bty = "n", horiz = TRUE)
 
 
-comp_weekly_TDA <- netCompare(props_weekly_TDA, permTest = FALSE, verbose = FALSE)
+comp_TDA_control <- netCompare(props_TDA_control, permTest = FALSE, verbose = FALSE)
 
-summary(comp_weekly_TDA, 
-        groupNames = c(paste("No TDA\nWeek:",choiceOfWeekHere),paste("TDA\nWeek:",choiceOfWeekHere)),
+summary(comp_TDA_control, 
+        groupNames = c("TDA", "Control"),
+        showCentr = c("degree", "between", "closeness"), 
+        #showCentr = c("eigenvector"),
+        numbNodes = 5)
+
+# Network construction - TDAvsControl
+net_TDA_noTDA <- netConstruct(data = data_TDA, 
+                                data2 = data_noTDA,  
+                                filtTax = "highestVar",
+                                filtTaxPar = list(highestVar = 50),
+                                measure = "spearman", thresh = 0.4,
+                                measurePar = list(nlambda=10, 
+                                                  rep.num=10),
+                                normMethod = "none", 
+                                zeroMethod = "none",
+                                sparsMethod = "threshold", 
+                                dissFunc = "signed",
+                                verbose = 3, weighted = T,
+                                seed = 123456)
+
+props_TDA_noTDA <- netAnalyze(net_TDA_noTDA, 
+                                centrLCC = FALSE,
+                                avDissIgnoreInf = TRUE,
+                                sPathNorm = FALSE,
+                                clustMethod = "cluster_fast_greedy",
+                                #hubPar = c("degree", "between", "closeness"),
+                                hubPar = "eigenvector",
+                                hubQuant = 0.9,
+                                lnormFit = TRUE,
+                                normDeg = FALSE,
+                                normBetw = FALSE,
+                                normClose = FALSE,
+                                normEigen = FALSE)
+
+summary(props_TDA_noTDA)
+
+# for saving the plot as an image
+# png(filename = "TDA_Vs_NoTDA_thres40_mad.png",
+#     width = 4000, height = 3000,units = "px", pointsize = 12,
+#     bg = "white", res = 300, family = "", restoreConsole = TRUE,
+#     type = c("windows", "cairo", "cairo-png"),
+#     symbolfamily = "default")
+
+plot(props_TDA_noTDA, 
+     sameLayout = TRUE, 
+     nodeColor = "cluster",
+     nodeSize = "mclr",
+     labelScale = FALSE,
+     shortenLabels = "none",
+     cexNodes = 1.5, 
+     cexLabels = 1.3,
+     cexHubLabels = 1,
+     cexTitle = 3.7,
+     groupNames = c("TDA", "No TDA"),
+     hubBorderCol  = "gray40")
+#dev.off() # shutting off image saving
+
+# legend("bottomleft", title = "estimated association:", legend = c("+","-"), 
+#        col = c("#009900","red"), inset = 0.02, cex = 2, lty = 1, lwd = 4, 
+#        bty = "n", horiz = TRUE)
+
+
+comp_TDA_noTDA <- netCompare(props_TDA_noTDA, permTest = FALSE, verbose = FALSE)
+
+summary(comp_TDA_noTDA, 
+        groupNames = c("TDA", "No TDA"),
         showCentr = c("degree", "between", "closeness"), 
         #showCentr = c("eigenvector"),
         numbNodes = 5)
 
 
+
 #####
 # trying data_analyze
 # henriciella + 770.4851152
-data_analyze(data = inData, feature1 = "Sulfitobacter", feature2 = "415.1571781")
+feat1 <- "Jannaschia"
+feat2 <- "645.2042601"
+data_analyze(data = inData, feature1 = feat1, feature2 = feat2)
