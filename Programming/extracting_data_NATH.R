@@ -170,16 +170,20 @@ extracting_data_NATH <- function(whichWeek="null", whichTaxLevel="species",
   if (whichNormalization == "peak") {
     # normalizing the metabolomic data, percentage-based according to max peak per feature
     ### OBS COMMENT: Maybe we need to normalize per median ###
-    df_metab_tmp4 = as.data.frame(apply(df_metab,MARGIN = 2, function(x){x/max(x)})) 
+    data_metab = as.data.frame(apply(df_metab_tmp3,MARGIN = 2, function(x){x/max(x)})) 
     
   } else if (whichNormalization == "median") {
     # normalizing per median
-    df_metab_tmp4 = as.data.frame(apply(df_metab, MARGIN = 2, function(x){x/(median(x)+1)}))
+    data_metab = as.data.frame(apply(df_metab_tmp3, MARGIN = 2, function(x){x/(median(x)+1)}))
+    
+  } else if (whichNormalization == "mean") {
+    # normalizing per mean
+    data_metab = as.data.frame(apply(df_metab_tmp3, MARGIN = 2, function(x){x/(mean(x))}))
     
   } else if (whichNormalization == "mad") {
     # normalizing per mad (median absolute deviation)
-    df_metab_tmp4 = as.data.frame(apply(df_metab, MARGIN = 2, function(x){x/(mad(x, center = median(x), na.rm = FALSE, constant = 1)+1)}))
-  
+    data_metab = as.data.frame(apply(df_metab_tmp3, MARGIN = 2, function(x){x/(mad(x, center = median(x), na.rm = FALSE, constant = 1)+1)}))
+    
   } else {
     print("No correct normalization were chosen, no normalization performed.\n Enter either: 'median', 'mad' or 'peak'")
   }
