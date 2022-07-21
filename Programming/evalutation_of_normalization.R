@@ -28,6 +28,7 @@ source("Programming/Functions.R")
 list[data_peak, strata_field]   <- getMetabDataNormEval(cutOffMetabMass = 200, whichNormalization = "peak")
 list[data_median, strata_field] <- getMetabDataNormEval(cutOffMetabMass = 200, whichNormalization = "median")
 list[data_mad, strata_field]    <- getMetabDataNormEval(cutOffMetabMass = 200, whichNormalization = "mad")
+list[data_mean, strata_field]    <- getMetabDataNormEval(cutOffMetabMass = 200, whichNormalization = "mean")
 
 dist_median <- as.matrix(dist(data_median, method = "euclidean"))
 here <- as.dist(dist_median)
@@ -37,4 +38,5 @@ ado_peak <- adonis2(data_peak ~ strata_field, strata = strata_field, permutation
 adonis2(data_median ~ strata_field, strata = strata_field, permutations = 999, by = NULL, method = "euclidean")
 adonis2(data_mad ~ strata_field, strata = strata_field, permutations = 999, by = NULL, method = "euclidean")
 #adonis2(data_mad ~ strata_field, strata = NULL, permutations = 999, by = NULL)
+adonis2(data_mean ~ strata_field, strata = strata_field, permutations = 999, by = NULL, method = "euclidean")
 
