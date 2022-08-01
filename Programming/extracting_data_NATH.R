@@ -170,19 +170,19 @@ extracting_data_NATH <- function(whichWeek="null", whichTaxLevel="species",
   if (whichNormalization == "peak") {
     # normalizing the metabolomic data, percentage-based according to max peak per feature
     ### OBS COMMENT: Maybe we need to normalize per median ###
-    data_metab = as.data.frame(apply(df_metab_tmp3,MARGIN = 2, function(x){x/max(x)})) 
+    df_metab = as.data.frame(apply(df_metab_tmp3,MARGIN = 2, function(x){x/max(x)})) 
     
   } else if (whichNormalization == "median") {
     # normalizing per median
-    data_metab = as.data.frame(apply(df_metab_tmp3, MARGIN = 2, function(x){x/(median(x)+1)}))
+    df_metab = as.data.frame(apply(df_metab_tmp3, MARGIN = 2, function(x){x/(median(x)+1)}))
     
   } else if (whichNormalization == "mean") {
     # normalizing per mean
-    data_metab = as.data.frame(apply(df_metab_tmp3, MARGIN = 2, function(x){x/(mean(x))}))
+    df_metab = as.data.frame(apply(df_metab_tmp3, MARGIN = 2, function(x){x/(mean(x))}))
     
   } else if (whichNormalization == "mad") {
     # normalizing per mad (median absolute deviation)
-    data_metab = as.data.frame(apply(df_metab_tmp3, MARGIN = 2, function(x){x/(mad(x, center = median(x), na.rm = FALSE, constant = 1)+1)}))
+    df_metab = as.data.frame(apply(df_metab_tmp3, MARGIN = 2, function(x){x/(mad(x, center = median(x), na.rm = FALSE, constant = 1)+1)}))
     
   } else {
     print("No correct normalization were chosen, no normalization performed.\n Enter either: 'median', 'mad' or 'peak'")
@@ -190,11 +190,11 @@ extracting_data_NATH <- function(whichWeek="null", whichTaxLevel="species",
   
   
   # giving the proper names to the data set
-  colnames(df_metab_tmp4) = colnames(df_metab)
-  rownames(df_metab_tmp4) = rownames(df_metab)
+  colnames(df_metab) = colnames(df_metab)
+  rownames(df_metab) = rownames(df_metab)
   
   
-  df_metab = df_metab_tmp4[sort(commonIDs, decreasing = FALSE),]
+  df_metab = df_metab[sort(commonIDs, decreasing = FALSE),]
   df_metax = df_metax[sort(commonIDs, decreasing = FALSE),]
   
   # making sure no NaN are present
