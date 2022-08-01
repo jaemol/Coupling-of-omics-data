@@ -32,7 +32,8 @@ library(NetCoMi)
 # loading functions
 source("Programming/extracting_data_NATH.R")
 source("Programming/data_filtering.R")
-source("Programming/data_analyze.R")
+#source("Programming/data_analyze.R")
+source("Programming/Functions.R")
 
 # loading data
 chosenDataSet       = "metab"       # "metab" or "genom"
@@ -278,8 +279,8 @@ summary(comp_TDA_control,
 # Network construction - TDAvsControl
 net_TDA_noTDA <- netConstruct(data = data_TDA, 
                                 data2 = data_noTDA,  
-                                filtTax = "highestVar",
-                                filtTaxPar = list(highestVar = 50),
+                                #filtTax = "highestVar",
+                                #filtTaxPar = list(highestVar = 50),
                                 measure = "spearman", thresh = 0.4,
                                 measurePar = list(nlambda=10, 
                                                   rep.num=10),
@@ -345,6 +346,6 @@ summary(comp_TDA_noTDA,
 #####
 # trying data_analyze
 # henriciella + 770.4851152
-feat1 <- "Jannaschia"
-feat2 <- "645.2042601"
+feat1 <- "Cohaesibacter"
+feat2 <- "611.1929419"
 data_analyze(data = inData, feature1 = feat1, feature2 = feat2)
