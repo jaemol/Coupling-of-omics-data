@@ -21,7 +21,7 @@ source("Programming/Functions.R")
 # the field will be given values for the samples, based upon their group, so:
 # 1 = control
 # 2 = no TDA present
-# 3 = TDA presen
+# 3 = TDA present
 # and so, this need to be incorporated via 'STRATA' in the PerMANOVA
 
 # getting the data
@@ -38,11 +38,8 @@ data_mad    <- as.data.frame(apply(data_metab,MARGIN = 2, function(x){x/(mad(x, 
 # list[data_mad, strata_field]    <- getMetabDataNormEval(cutOffMetabMass = 200, whichNormalization = "mad")
 # list[data_mean, strata_field]    <- getMetabDataNormEval(cutOffMetabMass = 200, whichNormalization = "mean")
 
-dist_median <- as.matrix(dist(data_median, method = "euclidean"))
-here <- as.dist(dist_median)
-
 # adonis(Y ~ NO3, data=dat, strata=dat$field, perm=999)
-ado_peak <- adonis2(data_peak ~ strata_field, strata = strata_field, permutations = 999, by = NULL, method = "euclidean")
+adonis2(data_peak ~ strata_field, strata = strata_field, permutations = 999, by = NULL, method = "euclidean")
 adonis2(data_median ~ strata_field, strata = strata_field, permutations = 999, by = NULL, method = "euclidean")
 adonis2(data_mad ~ strata_field, strata = strata_field, permutations = 999, by = NULL, method = "euclidean")
 #adonis2(data_mad ~ strata_field, strata = NULL, permutations = 999, by = NULL)
