@@ -37,6 +37,11 @@ data_filtering <- function(data, whichDataSet, whichWeek, cutOffOrAuto="auto") {
   print("Generating metadata...")
   ## finding different interesting information on the set
   ## mean, var, STD, ratio of zeros, 
+  #par(mfrow=c(3,2))
+  layout(mat = matrix(c(1,1,2,2,3,3,
+                        0,4,4,5,5,0), nrow = 2, byrow = TRUE))
+  layout.show(n = 5)
+  
   meanData  <- unname(apply(inData, 2, mean))
   stdData   <- unname(apply(inData, 2, sd))
   varData   <- unname(apply(inData, 2, var))
@@ -44,11 +49,16 @@ data_filtering <- function(data, whichDataSet, whichWeek, cutOffOrAuto="auto") {
   CVData    <- unname(apply(inData, 2, function(x){sd(x)/mean(x)}))
                                         
   
-  plot(sort(meanData), main = "Mean Data")
-  plot(sort(stdData), main = "Standard Variations")
-  plot(sort(varData), main = "Variance")
-  plot(sort(ratioData), main = "Singleton ratios")
-  plot(sort(CVData), main = "Relative standard deviation")
+  plot(sort(meanData), main = "a) Mean Data", xlab = "Index of features", ylab = "Occurrence [#]", 
+       cex.lab = 1.5, cex.axis = 1.2, cex.main = 2.1)
+  plot(sort(stdData), main = "b) Standard Variations", xlab = "Index of features", ylab = "Occurrence [#]", 
+       cex.lab = 1.5, cex.axis = 1.2, cex.main = 2.1)
+  plot(sort(varData), main = "c) Variance", xlab = "Index of features", ylab = "Occurrence [#]", 
+       cex.lab = 1.5, cex.axis = 1.2, cex.main = 2.1)
+  plot(sort(ratioData), main = "d) Zero-ratios", xlab = "Index of features", ylab = "Ratio of zeros to non zeros", 
+       cex.lab = 1.5, cex.axis = 1.2, cex.main = 2.1)
+  plot(sort(CVData), main = "e) Relative standard deviation", xlab = "Index of features", ylab = "Occurrence [#]", 
+       cex.lab = 1.5, cex.axis = 1.2, cex.main = 2.1)
   
   
   
