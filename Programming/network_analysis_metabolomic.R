@@ -32,7 +32,6 @@ library(NetCoMi)
 # loading functions
 source("Programming/extracting_data_NATH.R")
 source("Programming/data_filtering.R")
-#source("Programming/data_analyze.R")
 source("Programming/Functions.R")
 
 # loading data
@@ -53,9 +52,9 @@ inData <- data_filtering(data=inData, whichDataSet=chosenDataSet, whichWeek=chos
 # can only select week number 1, 4, 6, or 10
 choiceOfWeekHere <- "null"
 if (choiceOfWeekHere != "null") {
-  data = inData[gsub(".+-(?=\\d+$)", "", rownames(inData), perl = TRUE)==choiceOfWeekHere,]  
+  data = inData[gsub(".+-(?=\\d+$)", "", rownames(inData), perl = TRUE)==choiceOfWeekHere,]
 } else {
-  data = inData  
+  data = inData
 }
 
 # or if wanted, make your own data here: 
@@ -64,15 +63,7 @@ if (choiceOfWeekHere != "null") {
 # data_week6  = inData[gsub(".+-(?=\\d+$)", "", rownames(inData), perl = TRUE)=="6",]
 # data_week10 = inData[gsub(".+-(?=\\d+$)", "", rownames(inData), perl = TRUE)=="10",]
 
-
-
-#dataOneColumns <- grep(x = colnames(data), pattern = "DATA.*")
-# colVector <- 1:length(colnames(data))
-# for (i in 1:length(colVector)) {
-#   if (i<=max(dataOneColumns)) {colVector[i] = "green"} else {colVector[i] = "red"}
-# }
-
-
+# run this for to simplify the naming of the 16s rRNA sequencing data 
 if (chosenTaxonomy=="genus"){
   colnames(data)=gsub("DATA.Bacteria_[A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.](.*)","\\1",colnames(data))
   colnames(data)=gsub("DATA.Archaea_[A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.](.*)","\\1",colnames(data))
@@ -80,63 +71,6 @@ if (chosenTaxonomy=="genus"){
   colnames(data)=gsub("DATA.Bacteria_[A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.](.*)[_.](.*)","\\1",colnames(data))
   colnames(data)=gsub("DATA.Archaea_[A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.][A-Za-z]*[_.](.*)[_.](.*)","\\1",colnames(data))
 }
-
-
-############################ 
-# building single network with spearman as association measure - Full dataset, both treated and untreated
-# net_single_fullSet <- netConstruct((data),
-#                                    #filtTax = "highestFreq",
-#                                    #filtTaxPar = list(highestFreq = 100),
-#                                    #filtSamp = "totalReads",
-#                                    #filtSampPar = list(totalReads = 1000),
-#                                    measure = "spearman",thresh = 0.65,
-#                                    measurePar = list(nlambda=10, 
-#                                                      rep.num=10),
-#                                    normMethod = "none", 
-#                                    zeroMethod = "none",
-#                                    sparsMethod = "threshold", 
-#                                    dissFunc = "signed",
-#                                    verbose = 3,weighted = T,
-#                                    seed = 123456)
-# 
-# props_single_fullSet <- netAnalyze(net_single_fullSet, 
-#                                    centrLCC = TRUE,
-#                                    clustMethod = "cluster_fast_greedy",
-#                                    hubPar = "eigenvector",
-#                                    weightDeg = FALSE, normDeg = FALSE)
-# 
-# #?summary.microNetProps
-# summary(props_single_fullSet, numbNodes = 5L)
-# 
-# 
-# plot(props_single_fullSet,
-#      labelScale = F,
-#      shortenLabels = "none",
-#      #nodeFilter = "clustMin",
-#      #nodeFilter = "highestBetween",
-#      #nodeFilterPar = 50,
-#      cexLabels = 1.3,
-#      title1 = paste("Single network with Spearman\nWeek:", choiceOfWeekHere, "taxonomy:", chosenTaxonomy),
-#      #title1 = "Single network with Spearman",
-#      showTitle = T,
-#      cexTitle = 1.7)
-# #nodeColor = colVector)
-# 
-# plot.microNetProps
-# 
-# 
-# # adding legend
-# #legend("topright", cex = 0.5, title = "estimated association:",
-# #      legend = c("Metataxonomic","Genomic"), lty = 1, lwd = 1, col = c("green","red"), 
-# #     bty = "n", horiz = TRUE)
-# 
-# legend(x=0.85,y=0.9,legend=c("Positive","Negative"),
-#        cex=0.6,col=c("green","red"),pch=c(".","."),lwd = c(3,3))
-# legend(x=0.85,y=0.6,legend=c("Metataxonomic","Metabolomic"),
-#        cex=0.6,col=c("green","red"),pch=c(16,16),lwd = c(3,3))
-
-
-
 
 
 ############################ 
