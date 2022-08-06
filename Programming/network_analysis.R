@@ -2,47 +2,21 @@
 ### Using Git-package NetCoMi ### 
 ### https://github.com/stefpeschel/NetCoMi ###
 
-## installing package first time 
-
-if(!requireNamespace("BiocManager", quietly = TRUE)){
-  utils::install.packages("BiocManager")
-}
-
-BiocManager::install(pkgs = c("Biobase", "doSNOW", "fdrtool", "filematrix",
-                              "foreach", "graphics", "grDevices", "gtools",
-                              "huge", "igraph", "MASS", "Matrix", "phyloseq",
-                              "pulsar", "qgraph", "Rdpack", "snow", "SPRING",
-                              "stats", "utils", "vegan", "WGCNA"))
-
-BiocManager::install("GO.db")
-
-
-devtools::install_github("GraceYoon/SPRING")
-devtools::install_github("zdk123/SpiecEasi")
-
-devtools::install_github("stefpeschel/NetCoMi", 
-                         dependencies = c("Depends", "Imports"),
-                         repos = c("https://cloud.r-project.org/",
-                                   BiocManager::repositories()))
-
-
 # loading NetCoMi library
 library(NetCoMi)
 
 # loading functions
 source("Programming/extracting_data_KAT.R")
-source("Programming/extracting_data_NATH.R")
 source("Programming/data_filtering.R")
+source("Programming/Functions.R")
 
 # loading data
 chosenWeek      <- "Week 02"
 chosenTaxonomy  <- "species"
-inData <- extracting_data_KAT(whichWeek = chosenWeek, whichTaxLevel = chosenTaxonomy)
-
-inData <- extracting_data_NATH()
+inData <- extracting_data_KAT(whichWeek = chosenWeek, whichTaxLevel = chosenTaxonomy, loadOrigData = TRUE)
 
 # filtering data
-inData <- data_filtering(inData)
+inData <- data_filtering(inData, whichDataSet = "genom")
 
 # excluding testID and OUA (antibiotics used or not)
 #inData = data
@@ -50,10 +24,7 @@ testID  <- inData$testID
 OUA     <- inData$OUA
 data = subset(inData, select = -c(testID, OUA))
 
-data = inData
 dataOneColumns <- grep(x = colnames(data), pattern = "DATA.*")
-
-
 colVector <- 1:length(colnames(data))
 for (i in 1:length(colVector)) {
   if (i<=max(dataOneColumns)) {colVector[i] = "green"} else {colVector[i] = "red"}
@@ -177,7 +148,7 @@ net_single_treated <- netConstruct(data_treated,
                                      zeroMethod = "none",
                                      sparsMethod = "threshold", 
                                      dissFunc = "signed",
-                                     verbose = 3,
+                                     verbose = 3, weighted = T,
                                      seed = 123456)
 
 props_single_treated <- netAnalyze(net_single_treated, 
@@ -191,13 +162,88 @@ plot(props_single_treated,
      cexLabels = 1.3,
      title1 = paste("Single network with Spearman, treated", chosenWeek, chosenTaxonomy),
      showTitle = T,
-     cexTitle = 2.3,
-     nodeColor = colVector)
+     cexTitle = 2.3)
+     #nodeColor = colVector)
 
 legend(x=0.85,y=0.9,legend=c("Metataxonomic","Genomic"),
        cex=0.6,col=c("green","red"),pch=c(16,16),lwd = c(3,3))
 
 summary(props_single_treated, numbNodes = 5L)
 
+## Comparative network - treated vs untreated
+data_untreated <- data[which(OUA==0),]
+data_treated <- data[which(OUA==1),]
 
-plot()
+# Network construction - TDAvsControl
+net_untreated_treated <- netConstruct(data = data_untreated, 
+                              data2 = data_treated,  
+                              filtTax = "highestVar",
+                              filtTaxPar = list(highestVar = 75),
+                              measure = "spearman", thresh = 0.3,
+                              measurePar = list(nlambda=10, 
+                                                rep.num=10),
+                              normMethod = "none", 
+                              zeroMethod = "none",
+                              sparsMethod = "threshold", 
+                              dissFunc = "signed",
+                              verbose = 3,# weighted = F,
+                              seed = 123456)
+
+props_untreated_treated <- netAnalyze(net_untreated_treated, 
+                              centrLCC = FALSE,
+                              avDissIgnoreInf = TRUE,
+                              sPathNorm = FALSE,
+                              clustMethod = "cluster_fast_greedy",
+                              #hubPar = c("degree", "between", "closeness"),
+                              hubPar = "eigenvector",
+                              hubQuant = 0.9,
+                              lnormFit = TRUE,
+                              normDeg = FALSE,
+                              normBetw = FALSE,
+                              normClose = FALSE,
+                              normEigen = FALSE)
+
+#summary(props_untreated_treated)
+
+# for saving the plot as an image
+# png(filename = "TDA_Vs_NoTDA_thres40_mad.png",
+#     width = 4000, height = 3000,units = "px", pointsize = 12,
+#     bg = "white", res = 300, family = "", restoreConsole = TRUE,
+#     type = c("windows", "cairo", "cairo-png"),
+#     symbolfamily = "default")
+
+plot(props_untreated_treated, 
+     sameLayout = TRUE, 
+     nodeColor = "cluster",
+     nodeSize = "mclr",
+     labelScale = FALSE,
+     shortenLabels = "none",
+     cexNodes = 1.5, 
+     cexLabels = 1.3,
+     cexHubLabels = 1,
+     cexTitle = 3.7,
+     groupNames = c("Untreated", "Treated"),
+     hubBorderCol  = "gray40")
+#dev.off() # shutting off image saving
+
+# legend("bottomleft", title = "estimated association:", legend = c("+","-"), 
+#        col = c("#009900","red"), inset = 0.02, cex = 2, lty = 1, lwd = 4, 
+#        bty = "n", horiz = TRUE)
+
+
+comp_untreated_treated <- netCompare(props_untreated_treated, permTest = FALSE, verbose = FALSE)
+
+summary(comp_untreated_treated, 
+        groupNames = c("Untreated", "Treated"),
+        showCentr = c("degree", "between", "closeness"), 
+        #showCentr = c("eigenvector"),
+        numbNodes = 5)
+
+
+
+#####
+# trying data_analyze
+
+feat1 <- "Cohaesibacter"
+feat2 <- "611.1929419"
+data_analyze(data = inData, feature1 = feat1, feature2 = feat2)
