@@ -148,9 +148,12 @@ data_filtering <- function(data, whichDataSet, whichWeek, cutOffOrAuto="auto") {
   plot(sort(CVData), main = "Relative standard deviation")
   
   
-  #inData = cbind(testID, OUA, inData)
-  
-  outData = inData
+  if (whichDataSet=="genom") {
+    inData = cbind(testID, OUA, inData) 
+    outData = inData
+  } else if (whichDataSet=="metab") {
+    outData = inData
+  }
   
   rm(list=setdiff(ls(), "outData"))
   print("Filtering done...")
