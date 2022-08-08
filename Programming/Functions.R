@@ -47,7 +47,8 @@ getMetabDataNormEval=function(cutOffMetabMass=200){
   
   # running through the names, matching them with phyloseq naming
   metab_new_names <- rownam_samples_metab
-  strata_field    <- array(0, length(metab_new_names))
+  groups    <- array(0, length(metab_new_names))
+  days    <- array(0, length(metab_new_names))
   
   # getting sample names and groups
   for (i in 1:length(rownam_samples_metab)) {
@@ -64,13 +65,13 @@ getMetabDataNormEval=function(cutOffMetabMass=200){
     # checking for TDA or control
     if(metadata_metabolomics$System[metaDataRow]=="TDA"){
       tdaBin="P"
-      strata_field[i] <- 3
+      groups[i] <- 3
     } else if (metadata_metabolomics$System[metaDataRow]=="NoTDA"){
       tdaBin="D"
-      strata_field[i] <- 2
+      groups[i] <- 2
     } else {
       tdaBin="C"
-      strata_field[i] <- 1
+      groups[i] <- 1
     }
     
     # finding biorep
@@ -78,6 +79,7 @@ getMetabDataNormEval=function(cutOffMetabMass=200){
     
     # finding time
     timeSample    = metadata_metabolomics$Time[metaDataRow] / 7
+    days[i] <- timeSample
     
     # inserting into new name format
     metab_new_names[i] = paste(tdaBin,biorepSample,timeSample, sep = "-")
@@ -90,7 +92,8 @@ getMetabDataNormEval=function(cutOffMetabMass=200){
   whichNaNRemove  <- c(1,10)
   metab_new_names <- metab_new_names[-whichNaNRemove]
   df_metab_tmp2   <- df_metab_tmp1[-whichNaNRemove,]
-  strata_field    <- strata_field[-whichNaNRemove]
+  groups    <- groups[-whichNaNRemove]
+  days      <- days[-whichNaNRemove]
   
   # inserting the correct names
   rownames(df_metab_tmp2) = metab_new_names
@@ -126,7 +129,7 @@ getMetabDataNormEval=function(cutOffMetabMass=200){
   #rownames(data_metab) = rownames(df_metab_tmp3)
   
   # rm(list=setdiff(ls(), c("complete_data", "strata_field")))
-  list(data_metab, strata_field)
+  list(data_metab, groups, days)
 }
 
 data_analyze <- function(data, feature1, feature2, sampleRemovalOutliers="null") {
