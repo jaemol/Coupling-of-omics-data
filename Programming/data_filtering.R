@@ -84,8 +84,10 @@ data_filtering <- function(data, whichDataSet, whichWeek, cutOffOrAuto="auto") {
       K    = coef(mmModel)[[2]]
       
       # visualizing the model in relation to ratio Data
-      plot(sort(ratioData) ~ time_frame, col = "grey")
-      lines(predict(mmModel) ~ time_frame, lwd = 3, col = "dark red")
+      plot(sort(ratioData) ~ time_frame, col = "grey", main = "Michaelis-Menten fit for cutoff threshold",
+           xlab="Index", ylab="Ratio of zeros in a feature",
+           cex.lab = 1.5, cex.axis = 1.2, cex.main = 2.1)
+      lines(predict(mmModel) ~ time_frame, lwd = 4, col = "dark red")
       #abline(h = threshold_ratio)
       
       # finding local maxima, potentiel knee points
@@ -100,7 +102,7 @@ data_filtering <- function(data, whichDataSet, whichWeek, cutOffOrAuto="auto") {
       a_linearFit <- (max_y - min(ratioData)) / (max_x-min(time_frame))
       b_linearFit <- min(ratioData) - a_linearFit*min(time_frame)
       
-      abline(a = b_linearFit, b=a_linearFit)
+      abline(a = b_linearFit, b=a_linearFit, col="red", lty="dotted", lwd = 3)
       
       # using distance formular on all knee points to line
       # distance formula: d = abs(a*x+b-y)/sqrt(a^2+1)
@@ -122,8 +124,8 @@ data_filtering <- function(data, whichDataSet, whichWeek, cutOffOrAuto="auto") {
       # defining the cutoff threshold
       threshold_ratio <- Vmax*longest_x / (K+longest_x)
       
-      points(longest_x, threshold_ratio)
-      abline(h = threshold_ratio)
+      points(longest_x, threshold_ratio, lwd = 4, col="blue")
+      abline(h = threshold_ratio, col="blue", lwd = 3)
       
       # if the ratioData is above the found cutoff, it is to be removed
       keepIn <- which(ratioData <= threshold_ratio)
