@@ -39,15 +39,9 @@ data_mad    <- as.data.frame(apply(data_metab,MARGIN = 2, function(x){x/(mad(x, 
 # list[data_mean, strata_field]    <- getMetabDataNormEval(cutOffMetabMass = 200, whichNormalization = "mean")
 
 # adonis(Y ~ NO3, data=dat, strata=dat$field, perm=999)
-adonis2(data_peak ~ strata_field, strata = strata_field, permutations = 999, by = NULL, method = "euclidean")
-adonis2(data_median ~ strata_field, strata = strata_field, permutations = 999, by = NULL, method = "euclidean")
-adonis2(data_mad ~ strata_field, strata = strata_field, permutations = 999, by = NULL, method = "euclidean")
-#adonis2(data_mad ~ strata_field, strata = NULL, permutations = 999, by = NULL)
-adonis2(data_mean ~ strata_field, strata = strata_field, permutations = 999, by = NULL, method = "euclidean")
-
-
-
-
-
+adonis2(data_peak ~ strata_field, strata = NULL, permutations = 999, by = NULL, method = "euclidean")
+adonis2(data_median ~ strata_field, strata = NULL, permutations = 999, by = NULL, method = "euclidean")
+adonis2(data_mad ~ strata_field, strata = NULL, permutations = 999, by = NULL, method = "euclidean")
+adonis2(data_mean ~ strata_field, strata = NULL, permutations = 999, by = NULL, method = "euclidean")
 
 
