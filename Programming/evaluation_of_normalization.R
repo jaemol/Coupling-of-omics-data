@@ -25,7 +25,7 @@ source("Programming/Functions.R")
 # and so, this need to be incorporated via 'STRATA' in the PerMANOVA
 
 # getting the data
-list[data_metab, strata_field]  <- getMetabDataNormEval(cutOffMetabMass = 200)
+list[data_metab, groups, days]  <- getMetabDataNormEval(cutOffMetabMass = 200)
 
 # implementing the different normalizations
 data_peak   <- as.data.frame(apply(data_metab,MARGIN = 2, function(x){x/max(x)})); rownames(data_peak)=rownames(data_metab); colnames(data_peak)=colnames(data_metab)
@@ -39,9 +39,9 @@ data_mad    <- as.data.frame(apply(data_metab,MARGIN = 2, function(x){x/(mad(x, 
 # list[data_mean, strata_field]    <- getMetabDataNormEval(cutOffMetabMass = 200, whichNormalization = "mean")
 
 # adonis(Y ~ NO3, data=dat, strata=dat$field, perm=999)
-adonis2(data_peak ~ strata_field, strata = NULL, permutations = 999, by = NULL, method = "euclidean")
-adonis2(data_median ~ strata_field, strata = NULL, permutations = 999, by = NULL, method = "euclidean")
-adonis2(data_mad ~ strata_field, strata = NULL, permutations = 999, by = NULL, method = "euclidean")
-adonis2(data_mean ~ strata_field, strata = NULL, permutations = 999, by = NULL, method = "euclidean")
+adonis2(data_peak ~ groups*days, strata = NULL, permutations = 999, by = NULL, method = "bray") # bray-curtis
+adonis2(data_median ~ groups*days, strata = NULL, permutations = 999, by = NULL, method = "bray")
+adonis2(data_mad ~ groups*days, strata = NULL, permutations = 999, by = NULL, method = "bray")
+adonis2(data_mean ~ groups*days, strata = NULL, permutations = 999, by = NULL, method = "bray")
 
 
