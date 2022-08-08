@@ -15,7 +15,7 @@ chosenDataSet       = "metab"       # "metab" or "genom"
 chosenTaxonomy      <- "species"    # "species" or "genus"   
 chosenWeek          <- "null"       # "1", "4", or "10"
 chosenCutoffMass    <- 200          # arbitrary value, removing based on column name
-chosenNormalization <- "mean"        # can either be 'mad', 'median', 'mean' or 'peak'
+chosenNormalization <- "peak"        # can either be 'mad', 'median', 'mean' or 'peak'
 inData <- extracting_data_NATH(whichWeek=chosenWeek, whichTaxLevel=chosenTaxonomy, 
                                cutOffMetabMass=chosenCutoffMass, whichNormalization=chosenNormalization)
 
@@ -56,12 +56,14 @@ data_TDA      <- data[substr(rownames(data), 1, 1) == "D",]
 data_noTDA    <- data[substr(rownames(data), 1, 1) == "P",]
 data_control  <- data[substr(rownames(data), 1, 1) == "C",]
 
+chosenThreshold <- 0.7
+
 # Network construction - noTDAvsControl
 net_noTDA_control <- netConstruct(data = data_noTDA, 
                         data2 = data_control,  
                         filtTax = "highestVar",
-                        filtTaxPar = list(highestVar = 50),
-                        measure = "spearman", thresh = 0.4,
+                        filtTaxPar = list(highestVar = 76),
+                        measure = "spearman", thresh = chosenThreshold,
                         measurePar = list(nlambda=10, 
                                          rep.num=10),
                         normMethod = "none", 
@@ -88,11 +90,11 @@ props_noTDA_control <- netAnalyze(net_noTDA_control,
 summary(props_noTDA_control)
 
 # for saving the plot as an image
-# png(filename = "noTDA_Vs_Control_thres40_mad.png",
-#     width = 4000, height = 3000,units = "px", pointsize = 12,
-#     bg = "white", res = 300, family = "", restoreConsole = TRUE,
-#     type = c("windows", "cairo", "cairo-png"),
-#     symbolfamily = "default")
+png(filename = paste("NoTDA_Vs_Control_thres",chosenThreshold,chosenNormalization,".png"),
+    width = 4000, height = 3000,units = "px", pointsize = 12,
+    bg = "white", res = 300, family = "", restoreConsole = TRUE,
+    type = c("windows", "cairo", "cairo-png"),
+    symbolfamily = "default")
 
 plot(props_noTDA_control, 
      sameLayout = TRUE, 
@@ -106,7 +108,7 @@ plot(props_noTDA_control,
      cexTitle = 3.7,
      groupNames = c("No TDA", "Control"),
      hubBorderCol  = "gray40")
-#dev.off() # shutting off image saving
+dev.off() # shutting off image saving
 
 # legend("bottomleft", title = "estimated association:", legend = c("+","-"), 
 #        col = c("#009900","red"), inset = 0.02, cex = 2, lty = 1, lwd = 4, 
@@ -125,8 +127,8 @@ summary(comp_noTDA_control,
 net_TDA_control <- netConstruct(data = data_TDA, 
                         data2 = data_control,  
                         filtTax = "highestVar",
-                        filtTaxPar = list(highestVar = 50),
-                        measure = "spearman", thresh = 0.4,
+                        filtTaxPar = list(highestVar = 76),
+                        measure = "spearman", thresh = chosenThreshold,
                         measurePar = list(nlambda=10, 
                                           rep.num=10),
                         normMethod = "none", 
@@ -153,11 +155,11 @@ props_TDA_control <- netAnalyze(net_TDA_control,
 summary(props_TDA_control)
 
 # for saving the plot as an image
-# png(filename = "TDA_Vs_Control_thres40_mad.png",
-#     width = 4000, height = 3000,units = "px", pointsize = 12,
-#     bg = "white", res = 300, family = "", restoreConsole = TRUE,
-#     type = c("windows", "cairo", "cairo-png"),
-#     symbolfamily = "default")
+png(filename = paste("TDA_Vs_Control_thres",chosenThreshold,chosenNormalization,".png"),
+    width = 4000, height = 3000,units = "px", pointsize = 12,
+    bg = "white", res = 300, family = "", restoreConsole = TRUE,
+    type = c("windows", "cairo", "cairo-png"),
+    symbolfamily = "default")
 
 plot(props_TDA_control, 
      sameLayout = TRUE, 
@@ -171,7 +173,7 @@ plot(props_TDA_control,
      cexTitle = 3.7,
      groupNames = c("TDA", "Control"),
      hubBorderCol  = "gray40")
-#dev.off() # shutting off image saving
+dev.off() # shutting off image saving
 
 # legend("bottomleft", title = "estimated association:", legend = c("+","-"), 
 #        col = c("#009900","red"), inset = 0.02, cex = 2, lty = 1, lwd = 4, 
@@ -189,9 +191,9 @@ summary(comp_TDA_control,
 # Network construction - TDAvsControl
 net_TDA_noTDA <- netConstruct(data = data_TDA, 
                                 data2 = data_noTDA,  
-                                #filtTax = "highestVar",
-                                #filtTaxPar = list(highestVar = 50),
-                                measure = "spearman", thresh = 0.4,
+                                filtTax = "highestVar",
+                                filtTaxPar = list(highestVar = 76),
+                                measure = "spearman", thresh = chosenThreshold,
                                 measurePar = list(nlambda=10, 
                                                   rep.num=10),
                                 normMethod = "none", 
@@ -218,11 +220,11 @@ props_TDA_noTDA <- netAnalyze(net_TDA_noTDA,
 summary(props_TDA_noTDA)
 
 # for saving the plot as an image
-# png(filename = "TDA_Vs_NoTDA_thres40_mad.png",
-#     width = 4000, height = 3000,units = "px", pointsize = 12,
-#     bg = "white", res = 300, family = "", restoreConsole = TRUE,
-#     type = c("windows", "cairo", "cairo-png"),
-#     symbolfamily = "default")
+png(filename = paste("TDA_Vs_NoTDA_thres",chosenThreshold,chosenNormalization,".png"),
+    width = 4000, height = 3000,units = "px", pointsize = 12,
+    bg = "white", res = 300, family = "", restoreConsole = TRUE,
+    type = c("windows", "cairo", "cairo-png"),
+    symbolfamily = "default")
 
 plot(props_TDA_noTDA, 
      sameLayout = TRUE, 
@@ -236,7 +238,7 @@ plot(props_TDA_noTDA,
      cexTitle = 3.7,
      groupNames = c("TDA", "No TDA"),
      hubBorderCol  = "gray40")
-#dev.off() # shutting off image saving
+dev.off() # shutting off image saving
 
 # legend("bottomleft", title = "estimated association:", legend = c("+","-"), 
 #        col = c("#009900","red"), inset = 0.02, cex = 2, lty = 1, lwd = 4, 

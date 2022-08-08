@@ -60,6 +60,8 @@ data_filtering <- function(data, whichDataSet, whichWeek, cutOffOrAuto="auto") {
   plot(sort(CVData), main = "e) Relative standard deviation", xlab = "Index of features", ylab = "Occurrence [#]", 
        cex.lab = 1.5, cex.axis = 1.2, cex.main = 2.1)
   
+  # resetting plot window
+  par(mfrow=c(1,1))
   
   
   if (cutOffOrAuto == "auto")
@@ -152,6 +154,9 @@ data_filtering <- function(data, whichDataSet, whichWeek, cutOffOrAuto="auto") {
   ratioData <- unname(apply(inData, 2, function(x){length(which(x==0))/length(x)}))
   CVData    <- unname(apply(inData, 2, function(x){sd(x)/mean(x)}))
   
+  layout(mat = matrix(c(1,1,2,2,3,3,
+                        0,4,4,5,5,0), nrow = 2, byrow = TRUE))
+  layout.show(n = 5)
   
   plot(sort(meanData), main = "Mean Data")
   plot(sort(stdData), main = "Standard Variations")
@@ -159,6 +164,8 @@ data_filtering <- function(data, whichDataSet, whichWeek, cutOffOrAuto="auto") {
   plot(sort(ratioData), main = "Singleton ratios")
   plot(sort(CVData), main = "Relative standard deviation")
   
+  # resetting plot window
+  par(mfrow=c(1,1))
   
   if (whichDataSet=="genom") {
     inData = cbind(testID, OUA, inData) 

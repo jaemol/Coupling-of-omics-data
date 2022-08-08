@@ -11,12 +11,15 @@ source("Programming/data_filtering.R")
 source("Programming/Functions.R")
 
 # loading data
-chosenWeek      <- "Week 02"
+chosenWeek      <- "null"
 chosenTaxonomy  <- "species"
 inData <- extracting_data_KAT(whichWeek = chosenWeek, whichTaxLevel = chosenTaxonomy, loadOrigData = TRUE)
 
 # filtering data
 inData <- data_filtering(inData, whichDataSet = "genom")
+
+# resetting plot window
+par(mfrow=c(1,1))
 
 # excluding testID and OUA (antibiotics used or not)
 #inData = data
@@ -42,11 +45,11 @@ if (chosenTaxonomy=="genus"){
 
 # building single network with SPRING as association measure - Full dataset, both treated and untreated
 net_single_fullSet <- netConstruct((data),
-                           #filtTax = "highestFreq",
-                           #filtTaxPar = list(highestFreq = 100),
+                           filtTax = "highestVar",
+                           filtTaxPar = list(highestVar = 150),
                            #filtSamp = "totalReads",
                            #filtSampPar = list(totalReads = 1000),
-                           measure = "pearson",thresh = 0.5,
+                           measure = "pearson",thresh = 0.3,
                            measurePar = list(nlambda=10, 
                                              rep.num=10),
                            normMethod = "none", 
@@ -106,7 +109,9 @@ net_single_untreated <- netConstruct(data_untreated,
                                    #filtTaxPar = list(highestFreq = 100),
                                    #filtSamp = "totalReads",
                                    #filtSampPar = list(totalReads = 1000),
-                                   measure = "spearman",thresh = 0.6,
+                                   filtTax = "highestVar",
+                                   filtTaxPar = list(highestVar = 50)
+                                   measure = "spearman",thresh = 0.5,
                                    measurePar = list(nlambda=10, 
                                                      rep.num=10),
                                    normMethod = "none", 
@@ -127,8 +132,8 @@ plot(props_single_untreated,
      cexLabels = 1.3,
      title1 = paste("Single network with Spearman, untreated", chosenWeek, chosenTaxonomy),
      showTitle = T,
-     cexTitle = 2.3,
-     nodeColor = colVector)
+     cexTitle = 2.3)
+     #nodeColor = colVector)
 
 legend(x=0.85,y=0.9,legend=c("Metataxonomic","Genomic"),
        cex=0.6,col=c("green","red"),pch=c(16,16),lwd = c(3,3))
@@ -178,7 +183,7 @@ data_treated <- data[which(OUA==1),]
 net_untreated_treated <- netConstruct(data = data_untreated, 
                               data2 = data_treated,  
                               filtTax = "highestVar",
-                              filtTaxPar = list(highestVar = 75),
+                              filtTaxPar = list(highestVar = 70),
                               measure = "spearman", thresh = 0.3,
                               measurePar = list(nlambda=10, 
                                                 rep.num=10),
@@ -213,10 +218,12 @@ props_untreated_treated <- netAnalyze(net_untreated_treated,
 #     symbolfamily = "default")
 
 plot(props_untreated_treated, 
+     #layout = lay_fr,
+     #layout = "circle",
      sameLayout = TRUE, 
      nodeColor = "cluster",
      nodeSize = "mclr",
-     labelScale = FALSE,
+     labelScale = T,
      shortenLabels = "none",
      cexNodes = 1.5, 
      cexLabels = 1.3,
