@@ -11,7 +11,7 @@ source("Programming/data_filtering.R")
 source("Programming/Functions.R")
 
 # loading data
-chosenWeek      <- "null"
+chosenWeek      <- "Week 02"
 chosenTaxonomy  <- "genus"
 inData <- extracting_data_KAT(whichWeek = chosenWeek, whichTaxLevel = chosenTaxonomy, loadOrigData = TRUE)
 
@@ -49,7 +49,7 @@ net_single_fullSet <- netConstruct((data),
                            filtTaxPar = list(highestVar = 150),
                            #filtSamp = "totalReads",
                            #filtSampPar = list(totalReads = 1000),
-                           measure = "pearson",thresh = 0.3,
+                           measure = "spearman",thresh = 0.5,
                            measurePar = list(nlambda=10, 
                                              rep.num=10),
                            normMethod = "none", 
@@ -151,8 +151,8 @@ net_single_treated <- netConstruct(data_treated,
                                      #filtSamp = "totalReads",
                                      #filtSampPar = list(totalReads = 1000),
                                      filtTax = "highestVar",
-                                     filtTaxPar = list(highestVar = 50),
-                                     measure = "spearman",thresh = 0.2,
+                                     filtTaxPar = list(highestVar = 100),
+                                     measure = "spearman",thresh = 0.4,
                                      measurePar = list(nlambda=10, 
                                                        rep.num=10),
                                      normMethod = "none", 
@@ -194,17 +194,17 @@ data_treated <- data[which(OUA==1),]
 net_untreated_treated <- netConstruct(data = data_untreated, 
                               data2 = data_treated,  
                               filtTax = "highestVar",
-                              filtTaxPar = list(highestVar = 100),
+                              filtTaxPar = list(highestVar = 76),
                               #filtTax = "highestFreq",
                               #filtTaxPar = list(highestFreq = 50),
-                              measure = "spearman", thresh = 0.50,
+                              measure = "pear", thresh = 0.7,
                               measurePar = list(nlambda=10, 
                                                 rep.num=10),
                               normMethod = "none", 
                               zeroMethod = "none",
                               sparsMethod = "threshold", 
                               dissFunc = "signed",
-                              verbose = 3, weighted = F,
+                              verbose = 3, weighted = T,
                               seed = 123456)
 
 props_untreated_treated <- netAnalyze(net_untreated_treated, 
@@ -224,7 +224,7 @@ props_untreated_treated <- netAnalyze(net_untreated_treated,
 #summary(props_untreated_treated)
 
 # for saving the plot as an image
-# png(filename = "TDA_Vs_NoTDA_thres40_mad.png",
+# png(filename = "Treated_Vs_Untreated_thres7.png",
 #     width = 4000, height = 3000,units = "px", pointsize = 12,
 #     bg = "white", res = 300, family = "", restoreConsole = TRUE,
 #     type = c("windows", "cairo", "cairo-png"),
@@ -264,6 +264,9 @@ summary(comp_untreated_treated,
 #####
 # trying data_analyze
 
-feat1 <- "Cohaesibacter"
-feat2 <- "611.1929419"
+#feat1 <- "Cohaesibacter"
+#feat2 <- "611.1929419"
+feat1 <- "lachnoclostridium"
+feat2 <- "tetO.2"
+
 data_analyze(data = inData, feature1 = feat1, feature2 = feat2)
