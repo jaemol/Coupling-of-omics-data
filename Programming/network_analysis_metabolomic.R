@@ -90,11 +90,11 @@ props_noTDA_control <- netAnalyze(net_noTDA_control,
 summary(props_noTDA_control)
 
 # for saving the plot as an image
-png(filename = paste("NoTDA_Vs_Control_thres",chosenThreshold,chosenNormalization,".png"),
-    width = 4000, height = 3000,units = "px", pointsize = 12,
-    bg = "white", res = 300, family = "", restoreConsole = TRUE,
-    type = c("windows", "cairo", "cairo-png"),
-    symbolfamily = "default")
+# png(filename = paste("NoTDA_Vs_Control_thres",chosenThreshold,chosenNormalization,".png"),
+#     width = 4000, height = 3000,units = "px", pointsize = 12,
+#     bg = "white", res = 300, family = "", restoreConsole = TRUE,
+#     type = c("windows", "cairo", "cairo-png"),
+#     symbolfamily = "default")
 
 plot(props_noTDA_control, 
      sameLayout = TRUE, 
@@ -108,7 +108,7 @@ plot(props_noTDA_control,
      cexTitle = 3.7,
      groupNames = c("No TDA", "Control"),
      hubBorderCol  = "gray40")
-dev.off() # shutting off image saving
+#dev.off() # shutting off image saving
 
 # legend("bottomleft", title = "estimated association:", legend = c("+","-"), 
 #        col = c("#009900","red"), inset = 0.02, cex = 2, lty = 1, lwd = 4, 
@@ -155,11 +155,11 @@ props_TDA_control <- netAnalyze(net_TDA_control,
 summary(props_TDA_control)
 
 # for saving the plot as an image
-png(filename = paste("TDA_Vs_Control_thres",chosenThreshold,chosenNormalization,".png"),
-    width = 4000, height = 3000,units = "px", pointsize = 12,
-    bg = "white", res = 300, family = "", restoreConsole = TRUE,
-    type = c("windows", "cairo", "cairo-png"),
-    symbolfamily = "default")
+# png(filename = paste("TDA_Vs_Control_thres",chosenThreshold,chosenNormalization,".png"),
+#     width = 4000, height = 3000,units = "px", pointsize = 12,
+#     bg = "white", res = 300, family = "", restoreConsole = TRUE,
+#     type = c("windows", "cairo", "cairo-png"),
+#     symbolfamily = "default")
 
 plot(props_TDA_control, 
      sameLayout = TRUE, 
@@ -173,7 +173,7 @@ plot(props_TDA_control,
      cexTitle = 3.7,
      groupNames = c("TDA", "Control"),
      hubBorderCol  = "gray40")
-dev.off() # shutting off image saving
+#dev.off() # shutting off image saving
 
 # legend("bottomleft", title = "estimated association:", legend = c("+","-"), 
 #        col = c("#009900","red"), inset = 0.02, cex = 2, lty = 1, lwd = 4, 
@@ -220,11 +220,11 @@ props_TDA_noTDA <- netAnalyze(net_TDA_noTDA,
 summary(props_TDA_noTDA)
 
 # for saving the plot as an image
-png(filename = paste("TDA_Vs_NoTDA_thres",chosenThreshold,chosenNormalization,".png"),
-    width = 4000, height = 3000,units = "px", pointsize = 12,
-    bg = "white", res = 300, family = "", restoreConsole = TRUE,
-    type = c("windows", "cairo", "cairo-png"),
-    symbolfamily = "default")
+# png(filename = paste("TDA_Vs_NoTDA_thres",chosenThreshold,chosenNormalization,".png"),
+#     width = 4000, height = 3000,units = "px", pointsize = 12,
+#     bg = "white", res = 300, family = "", restoreConsole = TRUE,
+#     type = c("windows", "cairo", "cairo-png"),
+#     symbolfamily = "default")
 
 plot(props_TDA_noTDA, 
      sameLayout = TRUE, 
@@ -238,7 +238,7 @@ plot(props_TDA_noTDA,
      cexTitle = 3.7,
      groupNames = c("TDA", "No TDA"),
      hubBorderCol  = "gray40")
-dev.off() # shutting off image saving
+#dev.off() # shutting off image saving
 
 # legend("bottomleft", title = "estimated association:", legend = c("+","-"), 
 #        col = c("#009900","red"), inset = 0.02, cex = 2, lty = 1, lwd = 4, 
@@ -259,5 +259,5 @@ summary(comp_TDA_noTDA,
 # trying data_analyze
 # henriciella + 770.4851152
 feat1 <- "Cohaesibacter"
-feat2 <- "611.1929419"
+feat2 <- "257.1857486"
 data_analyze(data = inData, feature1 = feat1, feature2 = feat2)
