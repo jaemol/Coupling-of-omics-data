@@ -49,16 +49,16 @@ data_filtering <- function(data, whichDataSet, whichWeek, cutOffOrAuto="auto") {
   CVData    <- unname(apply(inData, 2, function(x){sd(x)/mean(x)}))
                                         
   
-  plot(sort(meanData), main = "a) Mean Data", xlab = "Index of features", ylab = "Occurrence [#]", 
-       cex.lab = 1.5, cex.axis = 1.2, cex.main = 2.1)
-  plot(sort(stdData), main = "b) Standard Variations", xlab = "Index of features", ylab = "Occurrence [#]", 
-       cex.lab = 1.5, cex.axis = 1.2, cex.main = 2.1)
+  plot(sort(meanData), main = "a) Mean", xlab = "Index of features", ylab = "Occurrence [#]", 
+       cex.lab = 1.5, cex.axis = 1.2, cex.main = 2.07)
+  plot(sort(stdData), main = "b) Standard deviation", xlab = "Index of features", ylab = "Occurrence [#]", 
+       cex.lab = 1.5, cex.axis = 1.2, cex.main = 2.07)
   plot(sort(varData), main = "c) Variance", xlab = "Index of features", ylab = "Occurrence [#]", 
-       cex.lab = 1.5, cex.axis = 1.2, cex.main = 2.1)
-  plot(sort(ratioData), main = "d) Zero-ratios", xlab = "Index of features", ylab = "Ratio of zeros to non zeros", 
-       cex.lab = 1.5, cex.axis = 1.2, cex.main = 2.1)
+       cex.lab = 1.5, cex.axis = 1.2, cex.main = 2.07)
+  plot(sort(ratioData), main = "d) Zero-ratio", xlab = "Index of features", ylab = "Ratio of zeros to non zeros", 
+       cex.lab = 1.5, cex.axis = 1.2, cex.main = 2.07)
   plot(sort(CVData), main = "e) Relative standard deviation", xlab = "Index of features", ylab = "Occurrence [#]", 
-       cex.lab = 1.5, cex.axis = 1.2, cex.main = 2.1)
+       cex.lab = 1.5, cex.axis = 1.2, cex.main = 2.07)
   
   # resetting plot window
   par(mfrow=c(1,1))
