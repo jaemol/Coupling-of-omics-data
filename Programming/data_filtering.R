@@ -177,5 +177,5 @@ data_filtering <- function(data, whichDataSet, whichWeek, cutOffOrAuto="auto") {
   #rm(list=setdiff(ls(), "outData"))
   print("Filtering done...")
   return(outData)
-}
+} 
 
