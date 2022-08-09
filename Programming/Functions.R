@@ -65,13 +65,13 @@ getMetabDataNormEval=function(cutOffMetabMass=200){
     # checking for TDA or control
     if(metadata_metabolomics$System[metaDataRow]=="TDA"){
       tdaBin="P"
-      groups[i] <- 3
+      groups[i] <- "TDA"
     } else if (metadata_metabolomics$System[metaDataRow]=="NoTDA"){
       tdaBin="D"
-      groups[i] <- 2
+      groups[i] <- "noTDA"
     } else {
       tdaBin="C"
-      groups[i] <- 1
+      groups[i] <- "C"
     }
     
     # finding biorep
@@ -79,7 +79,7 @@ getMetabDataNormEval=function(cutOffMetabMass=200){
     
     # finding time
     timeSample    = metadata_metabolomics$Time[metaDataRow] / 7
-    days[i] <- timeSample
+    days[i] <- gsub(" ","",paste("day",timeSample))
     
     # inserting into new name format
     metab_new_names[i] = paste(tdaBin,biorepSample,timeSample, sep = "-")
