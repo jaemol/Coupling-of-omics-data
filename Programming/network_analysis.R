@@ -12,7 +12,7 @@ source("Programming/Functions.R")
 
 # loading data
 chosenWeek      <- "null"
-chosenTaxonomy  <- "species"
+chosenTaxonomy  <- "genus"
 inData <- extracting_data_KAT(whichWeek = chosenWeek, whichTaxLevel = chosenTaxonomy, loadOrigData = TRUE)
 
 # filtering data
@@ -110,7 +110,7 @@ net_single_untreated <- netConstruct(data_untreated,
                                    #filtSamp = "totalReads",
                                    #filtSampPar = list(totalReads = 1000),
                                    filtTax = "highestVar",
-                                   filtTaxPar = list(highestVar = 50)
+                                   filtTaxPar = list(highestVar = 50),
                                    measure = "spearman",thresh = 0.5,
                                    measurePar = list(nlambda=10, 
                                                      rep.num=10),
@@ -132,8 +132,12 @@ plot(props_single_untreated,
      cexLabels = 1.3,
      title1 = paste("Single network with Spearman, untreated", chosenWeek, chosenTaxonomy),
      showTitle = T,
+     nodeSize = "mclr",
+     shortenLabels = "none",
+     cexNodes = 1.5,
      cexTitle = 2.3)
-     #nodeColor = colVector)
+#nodeColor = colVector)
+
 
 legend(x=0.85,y=0.9,legend=c("Metataxonomic","Genomic"),
        cex=0.6,col=c("green","red"),pch=c(16,16),lwd = c(3,3))
@@ -146,7 +150,9 @@ net_single_treated <- netConstruct(data_treated,
                                      #filtTaxPar = list(highestFreq = 100),
                                      #filtSamp = "totalReads",
                                      #filtSampPar = list(totalReads = 1000),
-                                     measure = "spearman",thresh = 0.5,
+                                     filtTax = "highestVar",
+                                     filtTaxPar = list(highestVar = 50),
+                                     measure = "spearman",thresh = 0.2,
                                      measurePar = list(nlambda=10, 
                                                        rep.num=10),
                                      normMethod = "none", 
@@ -167,8 +173,13 @@ plot(props_single_treated,
      cexLabels = 1.3,
      title1 = paste("Single network with Spearman, treated", chosenWeek, chosenTaxonomy),
      showTitle = T,
+     nodeSize = "mclr",
+     shortenLabels = "none",
+     cexNodes = 1.5,
      cexTitle = 2.3)
      #nodeColor = colVector)
+
+
 
 legend(x=0.85,y=0.9,legend=c("Metataxonomic","Genomic"),
        cex=0.6,col=c("green","red"),pch=c(16,16),lwd = c(3,3))
@@ -183,15 +194,17 @@ data_treated <- data[which(OUA==1),]
 net_untreated_treated <- netConstruct(data = data_untreated, 
                               data2 = data_treated,  
                               filtTax = "highestVar",
-                              filtTaxPar = list(highestVar = 70),
-                              measure = "spearman", thresh = 0.3,
+                              filtTaxPar = list(highestVar = 100),
+                              #filtTax = "highestFreq",
+                              #filtTaxPar = list(highestFreq = 50),
+                              measure = "spearman", thresh = 0.50,
                               measurePar = list(nlambda=10, 
                                                 rep.num=10),
                               normMethod = "none", 
                               zeroMethod = "none",
                               sparsMethod = "threshold", 
                               dissFunc = "signed",
-                              verbose = 3,# weighted = F,
+                              verbose = 3, weighted = F,
                               seed = 123456)
 
 props_untreated_treated <- netAnalyze(net_untreated_treated, 
@@ -223,7 +236,7 @@ plot(props_untreated_treated,
      sameLayout = TRUE, 
      nodeColor = "cluster",
      nodeSize = "mclr",
-     labelScale = T,
+     labelScale = F,
      shortenLabels = "none",
      cexNodes = 1.5, 
      cexLabels = 1.3,
