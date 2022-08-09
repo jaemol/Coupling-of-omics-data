@@ -93,7 +93,7 @@ extracting_data_KAT <- function(whichWeek="null", loadOrigData=FALSE, whichTaxLe
   len_qpcr  <- length(data_qpcr[1,])
   
   # dropping the variables, except the resulting data set and the respective length of the datasets
-  rm(list=setdiff(ls(), c("complete_data", "len_16s", "len_qpcr")))
+  #rm(list=setdiff(ls(), c("complete_data", "len_16s", "len_qpcr")))
   
   print("Data loading finished...")
   #list(complete_data, len_16s, len_qpcr)
