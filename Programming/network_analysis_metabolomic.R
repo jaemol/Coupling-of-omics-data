@@ -20,7 +20,7 @@ inData <- extracting_data_NATH(whichWeek=chosenWeek, whichTaxLevel=chosenTaxonom
                                cutOffMetabMass=chosenCutoffMass, whichNormalization=chosenNormalization)
 
 # filtering data
-chosenCutoffFiltering <- 0.85
+chosenCutoffFiltering <- 0.78
 inData <- data_filtering(data=inData, whichDataSet=chosenDataSet, whichWeek=chosenWeek, cutOffOrAuto=chosenCutoffFiltering)
 
 ### for choosing the different days, with the maximum filtering of the full data set
@@ -56,7 +56,7 @@ data_TDA      <- data[substr(rownames(data), 1, 1) == "D",]
 data_noTDA    <- data[substr(rownames(data), 1, 1) == "P",]
 data_control  <- data[substr(rownames(data), 1, 1) == "C",]
 
-chosenThreshold <- 0.7
+chosenThreshold <- 0.45
 
 # Network construction - noTDAvsControl
 net_noTDA_control <- netConstruct(data = data_noTDA, 
@@ -261,3 +261,55 @@ summary(comp_TDA_noTDA,
 feat1 <- "Cohaesibacter"
 feat2 <- "257.1857486"
 data_analyze(data = inData, feature1 = feat1, feature2 = feat2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#############################
+# making a frontpage-figure # 
+#############################
+
+net_single_front <- netConstruct(data_noTDA,
+                                   #filtTax = "highestFreq",
+                                   #filtTaxPar = list(highestFreq = 100),
+                                   #filtSamp = "totalReads",
+                                   #filtSampPar = list(totalReads = 1000),
+                                   filtTax = "highestVar",
+                                   filtTaxPar = list(highestVar = 50),
+                                   measure = "spearman",thresh = chosenThreshold,
+                                   measurePar = list(nlambda=10, 
+                                                     rep.num=10),
+                                   normMethod = "none", 
+                                   zeroMethod = "none",
+                                   sparsMethod = "threshold", 
+                                   dissFunc = "signed",
+                                   verbose = 3, weighted = T,
+                                   seed = 123456)
+
+props_single_front <- netAnalyze(net_single_front, 
+                                   centrLCC = TRUE,
+                                   clustMethod = "cluster_fast_greedy",
+                                   hubPar = "eigenvector",
+                                   weightDeg = FALSE, normDeg = FALSE)
+
+plot(props_single_front,
+     labelScale = F,
+     cexLabels = 0,
+     #title1 = paste("Single network with Spearman, treated", chosenWeek, chosenTaxonomy),
+     #showTitle = T,
+     nodeSize = "mclr",
+     shortenLabels = "none",
+     cexNodes = 1.5,
+     #cexTitle = 2.3)
+#nodeColor = colVector)
