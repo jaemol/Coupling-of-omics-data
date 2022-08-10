@@ -112,7 +112,7 @@ extracting_data_NATH <- function(whichWeek="null", whichTaxLevel="species",
       
     #if (length(num_grep) == 1 && num_grep > 400) { 
     # find which sample is talked about
-    metaDataRow = which(metadata_metabolomics$Sample.no...MCCe. == num_grep)
+    metaDataRow = which(metadata_metabolomics$ï..Sample.no...MCCe. == num_grep)
     
     # ensuring no medium control (blank samples)
     #if (!(num_grep==449||num_grep==458)){
