@@ -6,7 +6,7 @@
 library(NetCoMi)
 
 # loading functions
-source("Programming/extracting_data_KAT.R")
+source("Programming/extracting_data_RWA.R")
 source("Programming/data_filtering.R")
 source("Programming/Functions.R")
 
