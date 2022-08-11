@@ -210,7 +210,7 @@ net_untreated_treated <- netConstruct(data = data_untreated,
                               #filtTaxPar = list(highestVar = 76),
                               #filtTax = "highestFreq",
                               #filtTaxPar = list(highestFreq = 50),
-                              measure = "pear", thresh = 0.7,
+                              measure = "pear", thresh = 0.2,
                               measurePar = list(nlambda=10, 
                                                 rep.num=10),
                               normMethod = "none", 
@@ -237,11 +237,11 @@ props_untreated_treated <- netAnalyze(net_untreated_treated,
 #summary(props_untreated_treated)
 
 # for saving the plot as an image
-# png(filename = "Treated_Vs_Untreated_thres7.png",
-#     width = 4000, height = 3000,units = "px", pointsize = 12,
-#     bg = "white", res = 300, family = "", restoreConsole = TRUE,
-#     type = c("windows", "cairo", "cairo-png"),
-#     symbolfamily = "default")
+png(filename = "Treated_Vs_Untreated_thres2.png",
+    width = 4000, height = 3000,units = "px", pointsize = 12,
+    bg = "white", res = 300, family = "", restoreConsole = TRUE,
+    type = c("windows", "cairo", "cairo-png"),
+    symbolfamily = "default")
 
 plot(props_untreated_treated, 
      #layout = lay_fr,
@@ -259,7 +259,7 @@ plot(props_untreated_treated,
      cexTitle = 3.7,
      groupNames = c("Untreated", "Treated"),
      hubBorderCol  = "gray40")
-#dev.off() # shutting off image saving
+dev.off() # shutting off image saving
 
 # legend("bottomleft", title = "estimated association:", legend = c("+","-"), 
 #        col = c("#009900","red"), inset = 0.02, cex = 2, lty = 1, lwd = 4, 
