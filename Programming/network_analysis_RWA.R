@@ -29,8 +29,18 @@ data = subset(inData, select = -c(testID, OUA))
 
 dataOneColumns <- grep(x = colnames(data), pattern = "DATA.*")
 colVector <- 1:length(colnames(data))
+shapeArray <- 1:length(colnames(data))
+dataOrigin <- 1:length(colnames(data))
 for (i in 1:length(colVector)) {
-  if (i<=max(dataOneColumns)) {colVector[i] = "green"} else {colVector[i] = "red"}
+  if (i<=max(dataOneColumns)) {
+    colVector[i] = "green"
+    shapeArray[i] = "circle"
+    dataOrigin[i] = "16s"
+  } else {
+    colVector[i] = "red"
+    shapeArray[i] = "triangle"
+    dataOrigin[i] = "qPCR"
+  }
 }
 
 
@@ -103,14 +113,14 @@ plot(LM)
 
 
 # network untreated, single network with spearman association
-data_untreated <- data[which(OUA==0),]
+data_untreated <- data[which(OUA==1),]
 net_single_untreated <- netConstruct(data_untreated,
                                    #filtTax = "highestFreq",
                                    #filtTaxPar = list(highestFreq = 100),
                                    #filtSamp = "totalReads",
                                    #filtSampPar = list(totalReads = 1000),
-                                   filtTax = "highestVar",
-                                   filtTaxPar = list(highestVar = 50),
+                                   #filtTax = "highestVar",
+                                   #filtTaxPar = list(highestVar = 50),
                                    measure = "spearman",thresh = 0.5,
                                    measurePar = list(nlambda=10, 
                                                      rep.num=10),
@@ -135,8 +145,10 @@ plot(props_single_untreated,
      nodeSize = "mclr",
      shortenLabels = "none",
      cexNodes = 1.5,
-     cexTitle = 2.3)
-#nodeColor = colVector)
+     cexTitle = 2.3,
+     nodeColor = "feature",
+     featVecCol = dataOrigin,
+     colVector = c("green", "red"))
 
 
 legend(x=0.85,y=0.9,legend=c("Metataxonomic","Genomic"),
@@ -144,7 +156,7 @@ legend(x=0.85,y=0.9,legend=c("Metataxonomic","Genomic"),
 
 
 # network treated, single network with spearman association
-data_treated <- data[which(OUA==1),]
+data_treated <- data[which(OUA==0),]
 net_single_treated <- netConstruct(data_treated,
                                      #filtTax = "highestFreq",
                                      #filtTaxPar = list(highestFreq = 100),
@@ -176,8 +188,9 @@ plot(props_single_treated,
      nodeSize = "mclr",
      shortenLabels = "none",
      cexNodes = 1.5,
-     cexTitle = 2.3)
-     #nodeColor = colVector)
+     cexTitle = 2.3,
+     nodeColor = colVector)
+     #colorVec = colVector)
 
 
 
@@ -187,17 +200,17 @@ legend(x=0.85,y=0.9,legend=c("Metataxonomic","Genomic"),
 summary(props_single_treated, numbNodes = 5L)
 
 ## Comparative network - treated vs untreated
-data_untreated <- data[which(OUA==0),]
-data_treated <- data[which(OUA==1),]
+data_untreated <- data[which(OUA==1),]
+data_treated <- data[which(OUA==0),]
 
 # Network construction - TDAvsControl
 net_untreated_treated <- netConstruct(data = data_untreated, 
                               data2 = data_treated,  
-                              filtTax = "highestVar",
-                              filtTaxPar = list(highestVar = 76),
+                              #filtTax = "highestVar",
+                              #filtTaxPar = list(highestVar = 76),
                               #filtTax = "highestFreq",
                               #filtTaxPar = list(highestFreq = 50),
-                              measure = "pear", thresh = 0.7,
+                              measure = "pear", thresh = 0.45,
                               measurePar = list(nlambda=10, 
                                                 rep.num=10),
                               normMethod = "none", 
@@ -232,9 +245,11 @@ props_untreated_treated <- netAnalyze(net_untreated_treated,
 
 plot(props_untreated_treated, 
      #layout = lay_fr,
-     #layout = "circle",
+     #layout = "triangle",
+     #rmSingles = "inboth",
      sameLayout = TRUE, 
-     nodeColor = "cluster",
+     nodeColor = colVector,
+     #featVecShape = shapeArray,
      nodeSize = "mclr",
      labelScale = F,
      shortenLabels = "none",
