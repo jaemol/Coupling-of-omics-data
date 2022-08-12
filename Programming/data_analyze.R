@@ -5,6 +5,10 @@ data_analyze <- function(data, feature1, feature2, sampleRemovalOutliers="null")
   feat2 = data[which(stringr::str_split_fixed(string = colnames(data), 
                                          pattern = "[_]",7)==feature2, arr.ind = TRUE)[1]]
   
+  feat1 = data$DATA.Bacteria_Proteobacteria_Alphaproteobacteria_Rhizobiales_Rhizobiaceae_Cohaesibacter_NA.1
+  feature2 = "257.1857486"
+  feature1 = "Cohaesibacter"
+  
   if (sampleRemovalOutliers != "null" && length(sampleRemovalOutliers)>0) {
     feat1 = feat1[-sampleRemovalOutliers,]
     feat2 = feat2[-sampleRemovalOutliers,]
