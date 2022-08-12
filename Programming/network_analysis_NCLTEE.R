@@ -16,11 +16,11 @@ chosenTaxonomy      <- "species"    # "species" or "genus"
 chosenWeek          <- "null"       # "1", "4", or "10"
 chosenCutoffMass    <- 200          # arbitrary value, removing based on column name
 chosenNormalization <- "peak"        # can either be 'mad', 'median', 'mean' or 'peak'
-inData <- extracting_data_NATH(whichWeek=chosenWeek, whichTaxLevel=chosenTaxonomy, 
+inData <- extracting_data_NCLTEE(whichWeek=chosenWeek, whichTaxLevel=chosenTaxonomy, 
                                cutOffMetabMass=chosenCutoffMass, whichNormalization=chosenNormalization)
 
 # filtering data
-chosenCutoffFiltering <- 0.78
+chosenCutoffFiltering <- 0.80
 inData <- data_filtering(data=inData, whichDataSet=chosenDataSet, whichWeek=chosenWeek, cutOffOrAuto=chosenCutoffFiltering)
 
 ### for choosing the different days, with the maximum filtering of the full data set
