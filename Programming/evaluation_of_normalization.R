@@ -10,7 +10,7 @@ library(vegan)
 library(gsubfn)
 
 # loading functions
-source("Programming/extracting_data_NATH.R")
+source("Programming/extracting_data_NCLTEE.R")
 source("Programming/data_filtering.R")
 source("Programming/data_analyze.R")
 source("Programming/Functions.R")
@@ -33,15 +33,10 @@ data_median <- as.data.frame(apply(data_metab,MARGIN = 2, function(x){x/(median(
 data_mean   <- as.data.frame(apply(data_metab,MARGIN = 2, function(x){x/(mean(x)+1)})); rownames(data_peak)=rownames(data_metab); colnames(data_peak)=colnames(data_metab)
 data_mad    <- as.data.frame(apply(data_metab,MARGIN = 2, function(x){x/(mad(x, center = median(x), na.rm = FALSE, constant = 1)+1)})); rownames(data_peak)=rownames(data_metab); colnames(data_peak)=colnames(data_metab)
 
-# list[data_peak, strata_field]   <- getMetabDataNormEval(cutOffMetabMass = 200, whichNormalization = "peak")
-# list[data_median, strata_field] <- getMetabDataNormEval(cutOffMetabMass = 200, whichNormalization = "median")
-# list[data_mad, strata_field]    <- getMetabDataNormEval(cutOffMetabMass = 200, whichNormalization = "mad")
-# list[data_mean, strata_field]    <- getMetabDataNormEval(cutOffMetabMass = 200, whichNormalization = "mean")
-
 # adonis(Y ~ NO3, data=dat, strata=dat$field, perm=999)
-adonis2(data_peak ~ groups*days, strata = NULL, permutations = 999, by = NULL, method = "bray") # bray-curtis
-adonis2(data_median ~ groups*days, strata = NULL, permutations = 999, by = NULL, method = "bray")
-adonis2(data_mad ~ groups*days, strata = NULL, permutations = 999, by = NULL, method = "bray")
-adonis2(data_mean ~ groups*days, strata = NULL, permutations = 999, by = NULL, method = "bray")
+adonis2(data_peak ~ groups*days, strata = NULL, permutations = 999999, by = NULL, method = "bray") # bray-curtis
+adonis2(data_median ~ groups*days, strata = NULL, permutations = 999999, by = NULL, method = "bray")
+adonis2(data_mad ~ groups*days, strata = NULL, permutations = 999999, by = NULL, method = "bray")
+adonis2(data_mean ~ groups*days, strata = NULL, permutations = 999999, by = NULL, method = "bray")
 
 
