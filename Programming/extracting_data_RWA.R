@@ -1,12 +1,10 @@
-### Script to extract data from testdatasheet from Katrine ###
-### Only want the data from e.g. week 2 and the appropriate columns ###
+### Script to extract data from RWA study ###
 
 # loading libraries
-#library(dplyr)
 library(gsubfn)
 
 # beginning function # 
-extracting_data_KAT <- function(whichWeek="null", loadOrigData=FALSE, whichTaxLevel="species") {
+extracting_data_KAT <- function(whichWeek="null", loadOrigData=TRUE, whichTaxLevel="species") {
   # loading in the two datasheets
   print("Loading in data...")
   if (loadOrigData == TRUE) {
@@ -88,14 +86,6 @@ extracting_data_KAT <- function(whichWeek="null", loadOrigData=FALSE, whichTaxLe
   # now, append the datasets, to get one set, along with testID and OUA
   complete_data <- cbind(testID, OUA, pure_data_16s, pure_data_qpcr, deparse.level = 1)
   
-  # keeping the length of 16s and qpcr data - JUST the results, no ID or OUA
-  len_16s   <- length(data_16s[1,]) - 2
-  len_qpcr  <- length(data_qpcr[1,])
-  
-  # dropping the variables, except the resulting data set and the respective length of the datasets
-  #rm(list=setdiff(ls(), c("complete_data", "len_16s", "len_qpcr")))
-  
   print("Data loading finished...")
-  #list(complete_data, len_16s, len_qpcr)
   return(complete_data)
 }
