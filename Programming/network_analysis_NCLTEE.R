@@ -21,11 +21,15 @@ inData <- extracting_data_NCLTEE(whichWeek=chosenWeek, whichTaxLevel=chosenTaxon
 
 # filtering data
 chosenCutoffFiltering <- 0.80
-inData <- data_filtering(data=inData, whichDataSet=chosenDataSet, whichWeek=chosenWeek, cutOffOrAuto=chosenCutoffFiltering)
+inData <- data_filtering(data=inData, whichDataSet=chosenDataSet, whichWeek=chosenWeek, 
+                         cutOffOrAuto=chosenCutoffFiltering)
+
+# resetting plot window
+par(mfrow=c(1,1))
 
 ### for choosing the different days, with the maximum filtering of the full data set
-
 # can only select week number 1, 4, 6, or 10
+# OBS: need to be run, to make the networks!
 choiceOfWeekHere <- "null"
 if (choiceOfWeekHere != "null") {
   data = inData[gsub(".+-(?=\\d+$)", "", rownames(inData), perl = TRUE)==choiceOfWeekHere,]
@@ -50,7 +54,7 @@ if (chosenTaxonomy=="genus"){
 
 
 ############################ 
-# compare two networks differentiated upon presence of TDA or not
+# compare two networks differentiated upon presence of TDA or no TDA, and control
 # splitting the data set of all weeks into three; TDA, noTDA and control
 data_TDA      <- data[substr(rownames(data), 1, 1) == "D",]
 data_noTDA    <- data[substr(rownames(data), 1, 1) == "P",]
@@ -89,13 +93,6 @@ props_noTDA_control <- netAnalyze(net_noTDA_control,
 
 summary(props_noTDA_control)
 
-# for saving the plot as an image
-# png(filename = paste("NoTDA_Vs_Control_thres",chosenThreshold,chosenNormalization,".png"),
-#     width = 4000, height = 3000,units = "px", pointsize = 12,
-#     bg = "white", res = 300, family = "", restoreConsole = TRUE,
-#     type = c("windows", "cairo", "cairo-png"),
-#     symbolfamily = "default")
-
 plot(props_noTDA_control, 
      sameLayout = TRUE, 
      nodeColor = "cluster",
@@ -108,12 +105,6 @@ plot(props_noTDA_control,
      cexTitle = 3.7,
      groupNames = c("No TDA", "Control"),
      hubBorderCol  = "gray40")
-#dev.off() # shutting off image saving
-
-# legend("bottomleft", title = "estimated association:", legend = c("+","-"), 
-#        col = c("#009900","red"), inset = 0.02, cex = 2, lty = 1, lwd = 4, 
-#        bty = "n", horiz = TRUE)
-
 
 comp_noTDA_control <- netCompare(props_noTDA_control, permTest = FALSE, verbose = FALSE)
 
@@ -122,6 +113,7 @@ summary(comp_noTDA_control,
         showCentr = c("degree", "between", "closeness"), 
         #showCentr = c("eigenvector"),
         numbNodes = 5)
+
 
 # Network construction - TDAvsControl
 net_TDA_control <- netConstruct(data = data_TDA, 
@@ -154,13 +146,6 @@ props_TDA_control <- netAnalyze(net_TDA_control,
 
 summary(props_TDA_control)
 
-# for saving the plot as an image
-# png(filename = paste("TDA_Vs_Control_thres",chosenThreshold,chosenNormalization,".png"),
-#     width = 4000, height = 3000,units = "px", pointsize = 12,
-#     bg = "white", res = 300, family = "", restoreConsole = TRUE,
-#     type = c("windows", "cairo", "cairo-png"),
-#     symbolfamily = "default")
-
 plot(props_TDA_control, 
      sameLayout = TRUE, 
      nodeColor = "cluster",
@@ -173,12 +158,6 @@ plot(props_TDA_control,
      cexTitle = 3.7,
      groupNames = c("TDA", "Control"),
      hubBorderCol  = "gray40")
-#dev.off() # shutting off image saving
-
-# legend("bottomleft", title = "estimated association:", legend = c("+","-"), 
-#        col = c("#009900","red"), inset = 0.02, cex = 2, lty = 1, lwd = 4, 
-#        bty = "n", horiz = TRUE)
-
 
 comp_TDA_control <- netCompare(props_TDA_control, permTest = FALSE, verbose = FALSE)
 
@@ -219,13 +198,6 @@ props_TDA_noTDA <- netAnalyze(net_TDA_noTDA,
 
 summary(props_TDA_noTDA)
 
-# for saving the plot as an image
-# png(filename = paste("TDA_Vs_NoTDA_thres",chosenThreshold,chosenNormalization,".png"),
-#     width = 4000, height = 3000,units = "px", pointsize = 12,
-#     bg = "white", res = 300, family = "", restoreConsole = TRUE,
-#     type = c("windows", "cairo", "cairo-png"),
-#     symbolfamily = "default")
-
 plot(props_TDA_noTDA, 
      sameLayout = TRUE, 
      nodeColor = "cluster",
@@ -238,12 +210,6 @@ plot(props_TDA_noTDA,
      cexTitle = 3.7,
      groupNames = c("TDA", "No TDA"),
      hubBorderCol  = "gray40")
-#dev.off() # shutting off image saving
-
-# legend("bottomleft", title = "estimated association:", legend = c("+","-"), 
-#        col = c("#009900","red"), inset = 0.02, cex = 2, lty = 1, lwd = 4, 
-#        bty = "n", horiz = TRUE)
-
 
 comp_TDA_noTDA <- netCompare(props_TDA_noTDA, permTest = FALSE, verbose = FALSE)
 
@@ -256,10 +222,9 @@ summary(comp_TDA_noTDA,
 
 
 #####
-# trying data_analyze
-# henriciella + 770.4851152
-feat1 <- "Cohaesibacter"
-feat2 <- "257.1857486"
+# using data_analyze
+feat1 <- "henriciella"
+feat2 <- "770.4851152"
 data_analyze(data = inData, feature1 = feat1, feature2 = feat2)
 
 

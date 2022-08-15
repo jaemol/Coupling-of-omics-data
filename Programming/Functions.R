@@ -22,7 +22,7 @@ findEpsi=function(L, minRange=0,maxRange=3, steps=0.1, maxY=200, minP=10) {
 getMetabDataNormEval=function(cutOffMetabMass=200){
   # Function, for extracting only metabolomic data, for evaluating the 
   # normalization done, to be used in PerMANOVA.
-  # Output is normalized data frame and field (groups) (tda, no tda, control)
+  # Output is unnormalized data frame and classes within data (groups) (tda, no tda, control + day of sampling)
   # loading in data
   library(gsubfn)
   df_metab_original <- read.csv("Data/allData_LCMS_metabolomics.csv", header = FALSE,
@@ -71,7 +71,7 @@ getMetabDataNormEval=function(cutOffMetabMass=200){
       groups[i] <- "noTDA"
     } else {
       tdaBin="C"
-      groups[i] <- "C"
+      groups[i] <- "Control"
     }
     
     # finding biorep
@@ -88,8 +88,7 @@ getMetabDataNormEval=function(cutOffMetabMass=200){
   }
   
   # removing samples with NA
-  #whichNaNRemove  <- which(gsub("MCCe", x = metab_new_names, replacement = "", perl = TRUE)==TRUE)
-  whichNaNRemove  <- c(1,10)
+  whichNaNRemove <- which(stringr::str_split_fixed(metab_new_names, pattern = "-", 3)[,2] == "NA")
   metab_new_names <- metab_new_names[-whichNaNRemove]
   df_metab_tmp2   <- df_metab_tmp1[-whichNaNRemove,]
   groups    <- groups[-whichNaNRemove]
@@ -102,33 +101,6 @@ getMetabDataNormEval=function(cutOffMetabMass=200){
   metabFeatToDrop <- which(as.numeric(colnames(df_metab_tmp2)) <= cutOffMetabMass)
   data_metab   <- subset(df_metab_tmp2, select = -c(metabFeatToDrop))
   
-  ## normalization of the metabolomic LCMS data
-  # if (whichNormalization == "peak") {
-  #   # normalizing the metabolomic data, percentage-based according to max peak per feature
-  #   ### OBS COMMENT: Maybe we need to normalize per median ###
-  #   data_metab = as.data.frame(apply(df_metab_tmp3,MARGIN = 2, function(x){x/max(x)})) 
-  #   
-  # } else if (whichNormalization == "median") {
-  #   # normalizing per median
-  #   data_metab = as.data.frame(apply(df_metab_tmp3, MARGIN = 2, function(x){x/(median(x)+1)}))
-  #   
-  # } else if (whichNormalization == "mean") {
-  #   # normalizing per mean
-  #   data_metab = as.data.frame(apply(df_metab_tmp3, MARGIN = 2, function(x){x/(mean(x)+1)}))
-  #   
-  # } else if (whichNormalization == "mad") {
-  #   # normalizing per mad (median absolute deviation)
-  #   data_metab = as.data.frame(apply(df_metab_tmp3, MARGIN = 2, function(x){x/(mad(x, center = median(x), na.rm = FALSE, constant = 1)+1)}))
-  #   
-  # } else {
-  #   print("No correct normalization were chosen, no normalization performed.\n Enter either: 'median', 'mad' or 'peak'")
-  # }
-  
-  # giving the proper names to the data set
-  #colnames(data_metab) = colnames(df_metab_tmp3)
-  #rownames(data_metab) = rownames(df_metab_tmp3)
-  
-  # rm(list=setdiff(ls(), c("complete_data", "strata_field")))
   list(data_metab, groups, days)
 }
 
