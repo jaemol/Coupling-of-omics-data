@@ -17,13 +17,6 @@ source("Programming/Functions.R")
 
 
 ### 
-# the data has nestedness (split in groups), so a field is needed
-# the field will be given values for the samples, based upon their group, so:
-# 1 = control
-# 2 = no TDA present
-# 3 = TDA present
-# and so, this need to be incorporated via 'STRATA' in the PerMANOVA
-
 # getting the data
 list[data_metab, groups, days]  <- getMetabDataNormEval(cutOffMetabMass = 200)
 
@@ -33,8 +26,8 @@ data_median <- as.data.frame(apply(data_metab,MARGIN = 2, function(x){x/(median(
 data_mean   <- as.data.frame(apply(data_metab,MARGIN = 2, function(x){x/(mean(x)+1)})); rownames(data_peak)=rownames(data_metab); colnames(data_peak)=colnames(data_metab)
 data_mad    <- as.data.frame(apply(data_metab,MARGIN = 2, function(x){x/(mad(x, center = median(x), na.rm = FALSE, constant = 1)+1)})); rownames(data_peak)=rownames(data_metab); colnames(data_peak)=colnames(data_metab)
 
-# adonis(Y ~ NO3, data=dat, strata=dat$field, perm=999)
-adonis2(data_peak ~ groups*days, strata = NULL, permutations = 999999, by = NULL, method = "bray") # bray-curtis
+# PERMANOVA of the different normalization
+adonis2(data_peak ~ groups*days, strata = NULL, permutations = 999999, by = NULL, method = "bray") 
 adonis2(data_median ~ groups*days, strata = NULL, permutations = 999999, by = NULL, method = "bray")
 adonis2(data_mad ~ groups*days, strata = NULL, permutations = 999999, by = NULL, method = "bray")
 adonis2(data_mean ~ groups*days, strata = NULL, permutations = 999999, by = NULL, method = "bray")
