@@ -3,7 +3,6 @@
 ### and then filter it by a given limit of coefficient ###
 
 # Loading libraries
-#library(ggplot2)
 library(gsubfn)
 
 options(warn = 0) # set=2 to end loops when warnings occur
@@ -26,16 +25,14 @@ data_filtering <- function(data, whichDataSet, whichWeek, cutOffOrAuto="auto") {
   # making sure no NaN are present, removing columns if TRUE
   inData <- inData[,colSums(is.na(inData))<nrow(inData)]
 
-  # if the variance is equal to zero, then its a zero-column
-  #which(unname(apply(inData, 2, var))==0)
+  # if the variance is equal to zero, then it's removed
   throwAway <- which(apply(inData, 2, var)==0)[]
   
   # dropping columns by index
   inData = inData[, -throwAway]
-  rm(throwAway) # to save memory
   
   print("Generating metadata...")
-  ## finding different interesting information on the set
+  ## finding different interesting informations on the set
   ## mean, var, STD, ratio of zeros, 
   #par(mfrow=c(3,2))
   layout(mat = matrix(c(1,1,2,2,3,3,
@@ -69,14 +66,10 @@ data_filtering <- function(data, whichDataSet, whichWeek, cutOffOrAuto="auto") {
       # fitting Michaelis-Menten function to data
       print("Fitting Michaelis-Menten function...")
       time_frame <- seq(from = 1, to = length(ratioData), by = 1)
-      
-      # tryCatch(mmModel <- nls(sort(ratioData) ~ Vm*time_frame/(K+time_frame),
-      #                         start = list(Vm=max(ratioData), K=max(time_frame) / 2)), 
-      #          warning("The Michaelis-Menten function could not be made using this data, moving on"))
-      #mmModel <- nls(sort(ratioData) ~ Vm*time_frame/(K+time_frame),
-      #start = list(Vm=max(ratioData), K=max(time_frame) / 2))
+  
       mmModel <- nls(sort(ratioData) ~ Vm*time_frame/(K+time_frame),
                    start = list(Vm=max(ratioData), K=max(time_frame) / 2))
+      
       # parameters estimated including confidence interval
       coef(mmModel)
       confint(mmModel, level = 0.9)
@@ -90,7 +83,6 @@ data_filtering <- function(data, whichDataSet, whichWeek, cutOffOrAuto="auto") {
            xlab="Index", ylab="Ratio of zeros in a feature",
            cex.lab = 1.5, cex.axis = 1.2, cex.main = 2.1)
       lines(predict(mmModel) ~ time_frame, lwd = 4, col = "dark red")
-      #abline(h = threshold_ratio)
       
       # finding local maxima, potentiel knee points
       kneePoints_collected <- which(diff(sign(diff(ratioData)))==-2)+1
@@ -99,24 +91,21 @@ data_filtering <- function(data, whichDataSet, whichWeek, cutOffOrAuto="auto") {
       a_linearFit <- max(ratioData) / max(time_frame)
       b_linearFit <- min(ratioData) - a_linearFit*min(time_frame)
       
-      max_x = which(sort(ratioData)>=max(ratioData)*0.97)[1]
+      max_x = which(sort(ratioData)>=max(ratioData)*0.95)[1]
       max_y = Vmax*max_x / (K+max_x)
       a_linearFit <- (max_y - min(ratioData)) / (max_x-min(time_frame))
       b_linearFit <- min(ratioData) - a_linearFit*min(time_frame)
       
       abline(a = b_linearFit, b=a_linearFit, col="red", lty="dotted", lwd = 3)
       
-      # using distance formular on all knee points to line
+      # using distance formula on all knee points to line
       # distance formula: d = abs(a*x+b-y)/sqrt(a^2+1)
       longest_distance  <- 0
       longest_x         <- 0
-      
-      #i=kneePoints_collected[400]
+
       for (i in which(kneePoints_collected<=max_x)) {
        temp_x = i
        temp_y = Vmax*temp_x / (K+temp_x)
-       
-       #points(temp_x, temp_y)
        
        dist = abs(a_linearFit*temp_x + b_linearFit-temp_y)/sqrt(a_linearFit^2+1)
        
@@ -146,8 +135,7 @@ data_filtering <- function(data, whichDataSet, whichWeek, cutOffOrAuto="auto") {
     }
   
   
-  
-  
+  # once again visualizing the metadata
   meanData  <- unname(apply(inData, 2, mean))
   stdData   <- unname(apply(inData, 2, sd))
   varData   <- unname(apply(inData, 2, var))
@@ -168,13 +156,11 @@ data_filtering <- function(data, whichDataSet, whichWeek, cutOffOrAuto="auto") {
   par(mfrow=c(1,1))
   
   if (whichDataSet=="genom") {
-    inData = cbind(testID, OUA, inData) 
-    outData = inData
+    outData = cbind(testID, OUA, inData) 
   } else if (whichDataSet=="metab") {
     outData = inData
   }
   
-  #rm(list=setdiff(ls(), "outData"))
   print("Filtering done...")
   return(outData)
 } 
