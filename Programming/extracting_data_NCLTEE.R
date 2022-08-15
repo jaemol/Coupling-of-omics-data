@@ -9,8 +9,8 @@ library(gsubfn)
 # beginning function
 extracting_data_NCLTEE <- function(whichWeek="null", whichTaxLevel="species", 
                                  cutOffMetabMass=200, whichNormalization) {
+  ################## Metataxonomic data ##################
   # loading data
-  #data_phys_original  <- readRDS("Data/allDataMetataxonomicNCLTEE.rds")
   load("Data/allData_16S_NCLTEE_Reduced.RData")
   data_phys_original <- ps.new
   
@@ -69,19 +69,9 @@ extracting_data_NCLTEE <- function(whichWeek="null", whichTaxLevel="species",
     # now making that new data into 16s data set
     df.fulldata.metax = newDat
   }
-  
-  
-  #df.full.metax <- cbind(array.phaebac.bin,df.fulldata.metax)
   df.full.metax <- df.fulldata.metax
   
-  #### Metabolomic data
-  
-  # char_data <- read.csv("Data/metabolomic_day7,28,70.csv", stringsAsFactors = F)
-  # num_data <- data.frame(data.matrix(char_data))
-  # numeric_columns <- sapply(num_data,function(x){mean(as.numeric(is.na(x)))<0.5})
-  # final_data <- data.frame(num_data[,numeric_columns], char_data[,!numeric_columns])
-  
-  
+  ################## Metabolomic data ##################
   # loading in data
   df_metab_original <- read.csv("Data/allData_LCMS_metabolomics.csv", header = FALSE,
                                 sep = ";", stringsAsFactors = FALSE, strip.white = TRUE, skip = 1)
@@ -97,7 +87,7 @@ extracting_data_NCLTEE <- function(whichWeek="null", whichTaxLevel="species",
   # transposing the data frame
   df_metab_tmp1 = as.data.frame(t(df_metab_original))
   
-  # loading in metadata metabolomics sheet - changed data to .csv first, to make it work
+  # loading in metadata metabolomics sheet
   metadata_metabolomics  <- read.csv("Data/Metadata-metabolomics.csv", fill = TRUE, header = TRUE, sep = ";")
   
   # fetching first row
@@ -109,55 +99,45 @@ extracting_data_NCLTEE <- function(whichWeek="null", whichTaxLevel="species",
   for (i in 1:length(rownam_samples_metab)) {
     
     num_grep = as.numeric(unlist(regmatches(rownam_samples_metab[i], gregexpr("[[:digit:]]+", rownam_samples_metab[i]))))
-      
-    #if (length(num_grep) == 1 && num_grep > 400) { 
-    # find which sample is talked about
+
+    # find which sample is relevant
     metaDataRow = which(metadata_metabolomics$Sample.no...MCCe. == num_grep)
     
-    # ensuring no medium control (blank samples)
-    #if (!(num_grep==449||num_grep==458)){
-      
-      # checking for TDA or control
-      if(metadata_metabolomics$System[metaDataRow]=="TDA"){
-        tdaBin="P"
-      } else if (metadata_metabolomics$System[metaDataRow]=="NoTDA"){
-        tdaBin="D"
-      } else {tdaBin="C"}
-      
-      # finding biorep
-      biorepSample  = metadata_metabolomics$Bio.Rep[metaDataRow]
-      
-      # finding time
-      timeSample    = metadata_metabolomics$Time[metaDataRow] / 7
-      
-      # inserting into new name format
-      metab_new_names[i] = paste(tdaBin,biorepSample,timeSample, sep = "-")
+    # checking for TDA, no TDA or control
+    if(metadata_metabolomics$System[metaDataRow]=="TDA"){
+      tdaBin="P"
+    } else if (metadata_metabolomics$System[metaDataRow]=="NoTDA"){
+      tdaBin="D"
+    } else {tdaBin="C"}
+    
+    # finding biorep
+    biorepSample  = metadata_metabolomics$Bio.Rep[metaDataRow]
+    
+    # finding time
+    timeSample    = metadata_metabolomics$Time[metaDataRow] / 7
+    
+    # inserting into new name format
+    metab_new_names[i] = paste(tdaBin,biorepSample,timeSample, sep = "-")
       
     #} 
   }
   
   # removing samples with NA
-  #whichNaNRemove  <- which(gsub("MCCe", x = metab_new_names, replacement = "", perl = TRUE)==TRUE)
-  whichNaNRemove  <- c(1,10)
+  whichNaNRemove <- which(stringr::str_split_fixed(metab_new_names, pattern = "-", 3)[,2] == "NA")
   metab_new_names <- metab_new_names[-whichNaNRemove]
   df_metab_tmp2   <- df_metab_tmp1[-whichNaNRemove,]
+  
+  
   
   # inserting the correct names
   rownames(df_metab_tmp2) = metab_new_names
   
-  # removing the additional column with information (1)
-  #df_metab_tmp2 = df_metab_tmp1[,-c(1)]
-  
   # finding the common test IDs, to make a full dataset
   commonIDs <- intersect(sampleID.metatax, metab_new_names)
-  
-  #data_metab = cbind(metab_new_names,df_metab_noblanks_tmp3)
-  #data_metax = cbind(sampleID.metatax,df.full.metax)
   
   # removing all features with masses <= 200 m/Z (mass over charge)
   metabFeatToDrop <- which(as.numeric(colnames(df_metab_tmp2)) <= cutOffMetabMass)
   df_metab_tmp3   <- subset(df_metab_tmp2, select = -c(metabFeatToDrop))
-  
   
   data_metab = df_metab_tmp3
   data_metax = df.full.metax
@@ -166,10 +146,9 @@ extracting_data_NCLTEE <- function(whichWeek="null", whichTaxLevel="species",
   df_metab = data_metab[metab_new_names %in% commonIDs,]
   df_metax = data_metax[sampleID.metatax %in% commonIDs,]
   
-  ## normalization of the metabolomic LCMS data
+  ## normalization of the metabolomic LC-MS data ##
   if (whichNormalization == "peak") {
     # normalizing the metabolomic data, percentage-based according to max peak per feature
-    ### OBS COMMENT: Maybe we need to normalize per median ###
     df_metab = as.data.frame(apply(df_metab_tmp3,MARGIN = 2, function(x){x/max(x)})) 
     
   } else if (whichNormalization == "median") {
@@ -193,12 +172,9 @@ extracting_data_NCLTEE <- function(whichWeek="null", whichTaxLevel="species",
   colnames(df_metab) = colnames(df_metab)
   rownames(df_metab) = rownames(df_metab)
   
-  
+  # sorting for combining
   df_metab = df_metab[sort(commonIDs, decreasing = FALSE),]
   df_metax = df_metax[sort(commonIDs, decreasing = FALSE),]
-  
-  # making sure no NaN are present
-  #df_metab = na.omit(df_metab)
    
   complete_data <- cbind(df_metax, df_metab, deparse.level = 1)
   
@@ -207,8 +183,6 @@ extracting_data_NCLTEE <- function(whichWeek="null", whichTaxLevel="species",
     # can only select week number 1, 4, or 10
     complete_data = complete_data[gsub(".+-(?=\\d+$)", "", rownames(complete_data), perl = TRUE)==whichWeek,]
   }
-  
-  rm(list=setdiff(ls(), c("complete_data")))
   
   return(complete_data)
 }
